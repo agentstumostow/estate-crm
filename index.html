@@ -3,238 +3,516 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estate CRM — agentSTUmostów</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>agentSTUmostów — CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --gold:#c4954a;--gold-l:#e8c97a;--dark:#0f0e0c;--dark2:#1a1916;
-  --dark3:#242220;--dark4:#2e2c29;--border:rgba(196,149,74,.18);
-  --border2:rgba(196,149,74,.07);--text:#e8e4dc;--text2:#a09a8e;
-  --text3:#6b6560;--green:#4a9c6f;--green-l:rgba(74,156,111,.15);
-  --red:#c0503a;--red-l:rgba(192,80,58,.15);--blue:#3a6fc0;
-  --blue-l:rgba(58,111,192,.15);--purple:#7c4ac0;
+  --cream:#f5f0e8;
+  --cream2:#ede8de;
+  --cream3:#e4ddd0;
+  --white:#fdfaf5;
+  --red:#b01f23;
+  --red-l:rgba(176,31,35,.08);
+  --red-m:rgba(176,31,35,.15);
+  --red-d:#8a1518;
+  --gray:#4a4a4a;
+  --gray2:#6b6b6b;
+  --gray3:#9a9a9a;
+  --gray4:#c8c4bc;
+  --border:#ddd8ce;
+  --border2:#e8e3d8;
+  --text:#2a2520;
+  --text2:#5a5550;
+  --text3:#8a8580;
+  --green:#2d7a50;
+  --green-l:rgba(45,122,80,.1);
+  --blue:#1e5fa0;
+  --blue-l:rgba(30,95,160,.1);
+  --orange:#c46020;
+  --orange-l:rgba(196,96,32,.1);
+  --shadow:0 1px 3px rgba(42,37,32,.08),0 4px 16px rgba(42,37,32,.04);
+  --shadow-md:0 4px 16px rgba(42,37,32,.12),0 1px 4px rgba(42,37,32,.06);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* ── SETUP ── */
-#setup{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .4s,visibility .4s}
-#setup.gone{opacity:0;visibility:hidden}
-.setup-box{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:44px;width:460px;max-width:95vw;position:relative;overflow:hidden}
-.setup-box::after{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(196,149,74,.12) 0%,transparent 70%);pointer-events:none}
-.s-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);margin-bottom:4px}
-.s-sub{font-size:12px;color:var(--text3);margin-bottom:32px}
-.s-warn{background:rgba(192,80,58,.1);border:1px solid rgba(192,80,58,.3);border-radius:8px;padding:12px;font-size:12px;color:#e07060;line-height:1.6;margin-bottom:24px}
-.s-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;font-weight:500}
-.s-input{width:100%;background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:6px;transition:border .15s}
-.s-input:focus{border-color:var(--gold)}
-.s-hint{font-size:11.5px;color:var(--text3);line-height:1.5;margin-bottom:20px}
-.s-hint a{color:var(--gold);text-decoration:none}
-.s-btn{width:100%;background:var(--gold);color:var(--dark);border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:8px}
-.s-btn:hover{background:var(--gold-l)}
-.s-demo{width:100%;background:none;border:1px solid var(--border2);border-radius:8px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s}
-.s-demo:hover{border-color:var(--border);color:var(--text)}
+/* ══════════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════════ */
+#login{
+  position:fixed;inset:0;background:var(--cream);z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s,visibility .5s;
+}
+#login.gone{opacity:0;visibility:hidden;pointer-events:none}
 
-/* ── APP ── */
-.app{display:flex;min-height:100vh;opacity:0;transition:opacity .4s}
-.app.on{opacity:1}
+.login-card{
+  display:flex;width:880px;max-width:96vw;
+  border-radius:20px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(42,37,32,.16),0 4px 20px rgba(42,37,32,.08);
+  border:1px solid var(--border);
+}
 
-/* ── SIDEBAR ── */
-.sb{width:228px;min-width:228px;background:var(--dark2);border-right:1px solid var(--border2);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sb-brand{padding:22px 18px 18px;border-bottom:1px solid var(--border2)}
-.sb-logo{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold)}
-.sb-sub{font-size:10.5px;color:var(--text3);margin-top:2px}
-.sb-conn{display:flex;align-items:center;gap:6px;padding:10px 18px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border2)}
-.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0}
-.sb-dot.ok{background:var(--green);box-shadow:0 0 0 3px rgba(74,156,111,.2)}
-.sb-sec{padding:14px 10px 4px}
-.sb-sec-lbl{font-size:9.5px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:2px}
-.ni{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:7px;cursor:pointer;color:var(--text2);font-size:12.5px;transition:all .15s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
-.ni:hover{background:rgba(196,149,74,.06);color:var(--text)}
-.ni.on{background:rgba(196,149,74,.11);color:var(--gold)}
-.ni-icon{font-size:13px;width:17px;text-align:center;flex-shrink:0}
-.ni-badge{margin-left:auto;background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px}
-.ni-badge.blue{background:var(--blue);color:#fff}
-.sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)}
-.sb-foot a{color:var(--gold);text-decoration:none;font-size:11px}
-.reset-btn{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;padding:0;margin-top:8px;display:block}
-.reset-btn:hover{color:var(--text2)}
+/* Left panel */
+.lc-left{
+  width:380px;flex-shrink:0;
+  background:var(--red);
+  padding:48px 40px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.lc-left::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:260px;height:260px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.lc-left::after{
+  content:'';position:absolute;bottom:-60px;left:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.ll-logo{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;color:#fff;
+  letter-spacing:-.3px;line-height:1.2;
+}
+.ll-tagline{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;letter-spacing:.02em}
+.ll-divider{width:40px;height:2px;background:rgba(255,255,255,.3);margin:28px 0}
+.ll-desc{font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7}
+.ll-features{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+.ll-feat{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.7)}
+.ll-feat-icon{font-size:14px;flex-shrink:0}
+.ll-bottom{font-size:11px;color:rgba(255,255,255,.4)}
 
-/* ── MAIN ── */
-.main{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{background:var(--dark2);border-bottom:1px solid var(--border2);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.tb-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;letter-spacing:-.2px}
-.tb-right{display:flex;gap:8px;align-items:center}
-.btn{padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;transition:all .15s}
-.btn-gold{background:var(--gold);color:var(--dark)}
-.btn-gold:hover{background:var(--gold-l)}
-.btn-ghost{background:rgba(196,149,74,.08);color:var(--gold);border:1px solid var(--border)}
-.btn-ghost:hover{background:rgba(196,149,74,.15)}
-.btn-danger{background:var(--red-l);color:var(--red)}
-.content{padding:22px 26px;flex:1;overflow-y:auto}
+/* Right panel */
+.lc-right{
+  flex:1;background:var(--white);
+  padding:48px 44px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.lr-welcome{font-size:12px;color:var(--red);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.lr-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--text);margin-bottom:6px}
+.lr-sub{font-size:13.5px;color:var(--text3);margin-bottom:36px;line-height:1.5}
 
-/* ── STATS ── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:26px}
-.stat{background:var(--dark2);border:1px solid var(--border2);border-radius:10px;padding:17px 18px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
-.stat:hover{border-color:var(--border);transform:translateY(-1px)}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.stat.g::before{background:var(--gold)} .stat.gr::before{background:var(--green)}
-.stat.bl::before{background:var(--blue)} .stat.re::before{background:var(--red)}
-.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;margin:5px 0 3px}
-.stat-ch{font-size:11px;font-weight:500}
-.stat-ch.up{color:var(--green)} .stat-ch.dn{color:var(--red)}
+.fg{margin-bottom:18px}
+.fl{font-size:11px;color:var(--text2);display:block;margin-bottom:6px;font-weight:500;letter-spacing:.04em}
+.fi{
+  width:100%;background:var(--cream);border:1.5px solid var(--border);
+  border-radius:9px;padding:12px 14px;font-family:'DM Sans',sans-serif;
+  font-size:14px;color:var(--text);outline:none;transition:all .2s;
+}
+.fi:focus{border-color:var(--red);background:var(--white);box-shadow:0 0 0 3px var(--red-l)}
+.fi::placeholder{color:var(--gray3)}
 
-/* ── SECTION HDR ── */
-.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:8px}
-.stitle{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600}
-.filters{display:flex;gap:5px;flex-wrap:wrap}
-.fb{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:none;font-size:11px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
-.fb:hover{border-color:var(--border);color:var(--text2)}
-.fb.on{background:rgba(196,149,74,.1);color:var(--gold);border-color:var(--border)}
+.pw-wrap{position:relative}
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--gray3);font-size:16px;
+  padding:4px;transition:color .15s;
+}
+.pw-toggle:hover{color:var(--text2)}
 
-/* ── TABLE ── */
-.tw{background:var(--dark2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:22px}
-table{width:100%;border-collapse:collapse}
-thead th{padding:9px 15px;font-size:10px;font-weight:500;color:var(--text3);text-align:left;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border2);background:rgba(15,14,12,.35)}
-tbody tr{border-bottom:1px solid var(--border2);transition:background .1s;cursor:pointer}
-tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:rgba(196,149,74,.03)}
-td{padding:10px 15px;font-size:13px;vertical-align:middle}
-.pname{font-weight:500;color:var(--text)}
-.paddr{font-size:11px;color:var(--text3);margin-top:2px}
-.type-tag{background:rgba(196,149,74,.1);color:var(--gold);padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500}
-.stag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
-.s-active{background:var(--green-l);color:#6fcf97}
-.s-pend{background:rgba(196,149,74,.15);color:var(--gold)}
-.s-res{background:var(--blue-l);color:#7eb3f0}
-.s-sold{background:rgba(107,101,96,.15);color:var(--text3)}
-.sdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.login-submit{
+  width:100%;background:var(--red);color:#fff;border:none;
+  border-radius:9px;padding:13px;font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;
+  letter-spacing:.02em;margin-top:4px;
+}
+.login-submit:hover{background:var(--red-d);box-shadow:0 4px 14px rgba(176,31,35,.3)}
+.login-submit:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
 
-/* ── TWO COL ── */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-bottom:22px}
+.login-err{
+  background:var(--red-l);border:1px solid rgba(176,31,35,.2);
+  border-radius:8px;padding:11px 14px;font-size:13px;color:var(--red);
+  margin-top:12px;display:none;line-height:1.5;
+}
+.login-err.show{display:block}
+.login-loading{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text3);padding:12px 0;display:none}
+.login-loading.show{display:flex}
 
-/* ── LEADS ── */
-.lrow{display:flex;align-items:center;gap:11px;padding:10px 15px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
-.lrow:last-child{border-bottom:none}
-.lrow:hover{background:rgba(196,149,74,.03)}
-.avtr{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--dark);flex-shrink:0}
-.lname{font-size:13px;font-weight:500}
-.ldet{font-size:11px;color:var(--text3);margin-top:1px}
+.lr-footer{font-size:11.5px;color:var(--text3);text-align:center;margin-top:28px;line-height:1.6}
+.lr-footer a{color:var(--red);text-decoration:none}
 
-/* ── CAL ── */
-.cal-hdr{padding:11px 15px;border-bottom:1px solid var(--border2);font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
-.cevt{padding:9px 15px;border-bottom:1px solid var(--border2);display:flex;gap:9px;align-items:flex-start;cursor:pointer;transition:background .1s}
-.cevt:last-child{border-bottom:none}
-.cevt:hover{background:rgba(196,149,74,.03)}
-.cdot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.ctitle{font-size:12.5px;font-weight:500}
-.cmeta{font-size:11px;color:var(--text3);margin-top:1px}
-
-/* ── TASKS ── */
-.trow{display:flex;align-items:center;gap:11px;padding:9px 15px;border-bottom:1px solid var(--border2);transition:background .1s}
-.trow:last-child{border-bottom:none}
-.trow:hover{background:rgba(196,149,74,.03)}
-.tcheck{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-size:10px}
-.tcheck.done{background:var(--green);border-color:var(--green);color:#fff}
-.tprio{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.ttxt{flex:1;font-size:13px}
-.ttxt.done{text-decoration:line-through;color:var(--text3)}
-.tmeta{font-size:11px;color:var(--text3);white-space:nowrap}
-
-/* ── CHART BARS ── */
-.chart-area{display:flex;align-items:flex-end;gap:7px;height:120px}
-.cbar-grp{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.cbar-val{font-size:10px;font-weight:600;color:var(--text2)}
-.cbar{width:100%;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .2s;min-height:3px}
-.cbar:hover{opacity:.75}
-.cbar-lbl{font-size:10px;color:var(--text3)}
-
-/* ── PROGRESS ── */
-.pbg{background:var(--dark3);border-radius:4px;height:5px;overflow:hidden;margin-top:5px}
-.pfill{height:100%;border-radius:4px;transition:width .5s ease}
-
-/* ── MODAL ── */
-.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.ovl.open{display:flex}
-.modal{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:26px;width:520px;max-width:96vw;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .2s ease}
-.modal-sm{width:420px}
-@keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
-.mcls{position:absolute;top:13px;right:13px;background:rgba(196,149,74,.08);border:none;border-radius:6px;width:27px;height:27px;cursor:pointer;color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center}
-.mcls:hover{background:rgba(196,149,74,.16)}
-.mtitle{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:18px;padding-right:32px}
-.fg{margin-bottom:11px}
-.fl{font-size:10px;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
-.fi,.fs,.ft{width:100%;background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:8px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .15s;box-sizing:border-box}
-.fi:focus,.fs:focus,.ft:focus{border-color:var(--gold)}
-.fs option{background:var(--dark3)}
-.ft{resize:vertical;min-height:65px}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.mact{display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border2);margin-top:6px}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:22px;right:22px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:11px 16px;border-radius:8px;font-size:13px;z-index:500;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;max-width:280px}
-.toast.show{opacity:1;transform:translateY(0)}
-
-/* ── LOADING ── */
-.loading{text-align:center;padding:32px;color:var(--text3);font-size:13px}
-.spin{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+/* Spinner */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── CREDIT ── */
-.cred-row{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid var(--border2)}
-.cred-row:last-child{border-bottom:none}
-.zbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+/* ══════════════════════════════════════
+   APP
+══════════════════════════════════════ */
+.app{display:flex;min-height:100vh;opacity:0;visibility:hidden;transition:opacity .4s}
+.app.on{opacity:1;visibility:visible}
 
-/* ── RANKING ── */
-.rank-row{display:flex;align-items:center;gap:13px;padding:11px 15px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
+/* ── SIDEBAR ── */
+.sb{
+  width:234px;min-width:234px;background:var(--white);
+  border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sb-brand{
+  padding:20px 18px 16px;
+  border-bottom:1px solid var(--border2);
+}
+.sb-logo{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;color:var(--red);
+  letter-spacing:-.2px;
+}
+.sb-sub{font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:.03em}
+
+.sb-user{
+  padding:12px 16px;border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-avtr{
+  width:32px;height:32px;border-radius:50%;background:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.sb-user-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-role{
+  font-size:10px;color:var(--red);font-weight:500;
+  background:var(--red-l);padding:1px 6px;border-radius:10px;
+  display:inline-block;margin-top:2px;
+}
+.sb-logout-btn{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-size:10px;font-family:inherit;margin-left:auto;padding:4px;
+  flex-shrink:0;transition:color .15s;
+}
+.sb-logout-btn:hover{color:var(--red)}
+
+.sb-sec{padding:14px 10px 4px}
+.sb-sec-lbl{
+  font-size:9.5px;font-weight:600;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:3px;
+}
+.ni{
+  display:flex;align-items:center;gap:9px;padding:7px 8px;
+  border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;
+  transition:all .15s;border:none;background:none;width:100%;
+  font-family:inherit;text-align:left;margin-bottom:1px;
+}
+.ni:hover{background:var(--cream);color:var(--text)}
+.ni.on{background:var(--red-l);color:var(--red);font-weight:500}
+.ni-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.ni-badge{
+  margin-left:auto;background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;
+}
+.ni-badge.blue{background:var(--blue)}
+.ni-badge.green{background:var(--green)}
+
+.sb-foot{
+  margin-top:auto;padding:14px 18px;border-top:1px solid var(--border2);
+}
+.sb-foot-site{font-size:11px;color:var(--text3)}
+.sb-foot-site a{color:var(--red);text-decoration:none;font-size:11px}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--cream)}
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border2);
+  padding:14px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:10;
+  box-shadow:0 1px 0 var(--border2);
+}
+.tb-bc{font-size:11px;color:var(--text3);margin-bottom:2px}
+.tb-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--text)}
+.tb-right{display:flex;gap:8px;align-items:center}
+
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .15s}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:var(--red-d);box-shadow:0 2px 8px rgba(176,31,35,.25)}
+.btn-outline{background:none;color:var(--text2);border:1.5px solid var(--border);font-size:12px}
+.btn-outline:hover{border-color:var(--gray4);color:var(--text)}
+.btn-ghost{background:var(--cream);color:var(--text2);font-size:12px}
+.btn-ghost:hover{background:var(--cream2);color:var(--text)}
+.btn-danger{background:var(--red-l);color:var(--red);border:1px solid rgba(176,31,35,.2)}
+.btn-danger:hover{background:rgba(176,31,35,.15)}
+.btn-sm{padding:5px 10px;font-size:12px}
+
+.content{padding:24px 28px;flex:1;overflow-y:auto}
+
+/* ── CARDS / STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat-card{
+  background:var(--white);border:1px solid var(--border2);
+  border-radius:12px;padding:18px 20px;position:relative;
+  overflow:hidden;cursor:pointer;transition:all .2s;
+  box-shadow:var(--shadow);
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.red::after{background:var(--red)}
+.stat-card.green::after{background:var(--green)}
+.stat-card.blue::after{background:var(--blue)}
+.stat-card.gray::after{background:var(--gray3)}
+.stat-lbl{font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.07em}
+.stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--text);margin:5px 0 4px}
+.stat-ch{font-size:12px;font-weight:500}
+.stat-ch.up{color:var(--green)}
+.stat-ch.dn{color:var(--red)}
+
+/* ── SECTION HDR ── */
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.stitle{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--text)}
+.filters{display:flex;gap:5px;flex-wrap:wrap}
+.fb{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.fb:hover{border-color:var(--gray4);color:var(--text2)}
+.fb.on{background:var(--red-l);color:var(--red);border-color:rgba(176,31,35,.25);font-weight:500}
+
+/* ── TABLE ── */
+.tw{background:var(--white);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:10px 16px;font-size:10.5px;font-weight:600;color:var(--text3);
+  text-align:left;text-transform:uppercase;letter-spacing:.07em;
+  border-bottom:1px solid var(--border2);background:var(--cream);
+}
+tbody tr{border-bottom:1px solid var(--border2);transition:background .1s;cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--cream)}
+td{padding:11px 16px;font-size:13.5px;vertical-align:middle}
+.pname{font-weight:500;color:var(--text)}
+.paddr{font-size:11.5px;color:var(--text3);margin-top:2px}
+
+/* ── STATUS TAGS ── */
+.stag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:500}
+.s-active{background:var(--green-l);color:var(--green)}
+.s-pend{background:var(--orange-l);color:var(--orange)}
+.s-res{background:var(--blue-l);color:var(--blue)}
+.s-sold{background:rgba(154,154,154,.12);color:var(--gray2)}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.type-tag{background:var(--red-l);color:var(--red);padding:3px 8px;border-radius:5px;font-size:11.5px;font-weight:500}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+
+/* ── LEAD ROWS ── */
+.lrow{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
+.lrow:last-child{border-bottom:none}
+.lrow:hover{background:var(--cream)}
+.avtr{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.lname{font-size:13.5px;font-weight:500;color:var(--text)}
+.ldet{font-size:11.5px;color:var(--text3);margin-top:1px}
+
+/* ── CALENDAR ── */
+.cal-hdr{padding:12px 16px;border-bottom:1px solid var(--border2);font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center;background:var(--cream)}
+.cevt{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:background .1s}
+.cevt:last-child{border-bottom:none}
+.cevt:hover{background:var(--cream)}
+.cdot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ctitle{font-size:13px;font-weight:500;color:var(--text)}
+.cmeta{font-size:11.5px;color:var(--text3);margin-top:1px}
+
+/* ── TASKS ── */
+.trow{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border2);transition:background .1s}
+.trow:last-child{border-bottom:none}
+.trow:hover{background:var(--cream)}
+.tcheck{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-size:11px}
+.tcheck.done{background:var(--green);border-color:var(--green);color:#fff}
+.tcheck:hover:not(.done){border-color:var(--red)}
+.tprio{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ttxt{flex:1;font-size:13.5px;color:var(--text)}
+.ttxt.done{text-decoration:line-through;color:var(--text3)}
+.tmeta{font-size:11.5px;color:var(--text3);white-space:nowrap}
+
+/* ── MODAL ── */
+.ovl{display:none;position:fixed;inset:0;background:rgba(42,37,32,.4);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ovl.open{display:flex}
+.modal{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:16px;padding:28px;width:540px;max-width:96vw;
+  max-height:90vh;overflow-y:auto;position:relative;
+  box-shadow:var(--shadow-md);animation:mIn .2s ease;
+}
+.modal-sm{width:420px}
+@keyframes mIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mcls{
+  position:absolute;top:14px;right:14px;
+  background:var(--cream);border:none;border-radius:7px;
+  width:28px;height:28px;cursor:pointer;color:var(--text2);
+  font-size:15px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.mcls:hover{background:var(--cream2);color:var(--text)}
+.mtitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:20px;padding-right:36px}
+.mfg{margin-bottom:12px}
+.mfl{font-size:11px;color:var(--text2);display:block;margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.mfi,.mfs,.mft{
+  width:100%;background:var(--cream);border:1.5px solid var(--border);
+  border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;
+  font-size:13.5px;color:var(--text);outline:none;transition:all .15s;
+  box-sizing:border-box;
+}
+.mfi:focus,.mfs:focus,.mft:focus{border-color:var(--red);background:var(--white);box-shadow:0 0 0 3px var(--red-l)}
+.mft{resize:vertical;min-height:70px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mact{display:flex;gap:8px;padding-top:16px;border-top:1px solid var(--border2);margin-top:6px;flex-wrap:wrap}
+
+/* ── CHARTS ── */
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:130px}
+.cbar-g{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cbar-v{font-size:10px;font-weight:600;color:var(--text2)}
+.cbar{width:100%;border-radius:4px 4px 0 0;cursor:pointer;transition:opacity .2s;min-height:3px}
+.cbar:hover{opacity:.75}
+.cbar-l{font-size:10px;color:var(--text3)}
+
+/* ── PROGRESS ── */
+.pbg{background:var(--cream2);border-radius:4px;height:5px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* ── CREDIT ── */
+.cred-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border2)}
+.cred-row:last-child{border-bottom:none}
+.zbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:500}
+
+/* ── RANK ── */
+.rank-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
 .rank-row:last-child{border-bottom:none}
-.rank-row:hover{background:rgba(196,149,74,.03)}
-.rank-pos{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;width:26px;text-align:center}
+.rank-row:hover{background:var(--cream)}
+.rank-pos{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;width:28px;text-align:center}
+
+/* ── KANBAN ── */
+.kanban-wrap{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
+.kcol{min-width:210px;background:var(--white);border:1px solid var(--border2);border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow)}
+.kcol-hdr{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border2);font-size:13px;font-weight:500;background:var(--cream)}
+.kcol-count{background:var(--cream2);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;color:var(--text2)}
+.kcard{background:var(--white);border:1px solid var(--border2);border-radius:8px;padding:12px;margin:8px;cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(42,37,32,.06)}
+.kcard:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.kcard-name{font-weight:500;font-size:13px;margin-bottom:3px;color:var(--text)}
+.kcard-det{font-size:11.5px;color:var(--text3)}
+.kcard-foot{display:flex;align-items:center;gap:6px;margin-top:8px}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:22px;right:22px;
+  background:var(--text);color:var(--cream);
+  padding:11px 18px;border-radius:10px;font-size:13px;
+  z-index:500;opacity:0;transform:translateY(8px);
+  transition:all .25s;pointer-events:none;max-width:280px;
+  box-shadow:var(--shadow-md);
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:36px;color:var(--text3);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:8px}
 
 /* ── KALKULATOR ── */
-.calc-result{background:rgba(196,149,74,.07);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
-.calc-big{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--gold)}
-.calc-sub{font-size:12px;color:var(--text3);margin-top:2px}
-.calc-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.calc-box{background:var(--dark3);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center}
-.calc-box-lbl{font-size:10px;color:var(--text3);margin-bottom:3px}
-.calc-box-val{font-weight:600;font-size:14px}
+.calc-result{
+  background:var(--red-l);border:1.5px solid rgba(176,31,35,.2);
+  border-radius:12px;padding:20px;margin-bottom:16px;
+}
+.calc-big{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--red)}
+.calc-sub{font-size:12.5px;color:var(--text3);margin-top:3px}
+.calc-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.calc-box{background:var(--white);border:1px solid var(--border2);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow)}
+.calc-box-lbl{font-size:11px;color:var(--text3);margin-bottom:4px}
+.calc-box-val{font-weight:600;font-size:15px;color:var(--text)}
+
+/* ── SECTION DIVIDER ── */
+.sec-div{
+  display:flex;align-items:center;gap:12px;margin:24px 0 16px;
+}
+.sec-div-line{flex:1;height:1px;background:var(--border2)}
+.sec-div-label{font-size:10.5px;color:var(--text3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 
 @media(max-width:900px){
-  .sb{display:none} .stats{grid-template-columns:repeat(2,1fr)}
-  .two,.fgrid{grid-template-columns:1fr}
-  .content{padding:14px} .topbar{padding:11px 14px}
+  .login-card{flex-direction:column}
+  .lc-left{width:100%;padding:32px 28px}
+  .ll-features{display:none}
+  .lc-right{padding:32px 28px}
+  .sb{display:none}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col,.fgrid{grid-template-columns:1fr}
+  .content{padding:16px}
+  .topbar{padding:12px 16px}
+  .kanban-wrap{flex-direction:column}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ SETUP ══ -->
-<div id="setup">
-  <div class="setup-box">
-    <div class="s-logo">🏠 Estate CRM</div>
-    <div class="s-sub">agentSTUmostów — Powered by Supabase</div>
-    <div class="s-warn">⚠️ Nie wklejaj kluczy API do czatu ani maila. Wpisz je tylko tutaj — zapisują się wyłącznie na Twoim urządzeniu.</div>
-    <label class="s-label">Supabase URL</label>
-    <input class="s-input" id="sb-url" placeholder="https://xxx.supabase.co" type="text">
-    <label class="s-label" style="margin-top:10px">Supabase Anon Key</label>
-    <input class="s-input" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIs..." type="password">
-    <div class="s-hint">Znajdziesz je w Supabase → <a href="https://supabase.com/dashboard" target="_blank">Project Settings → API</a>. URL projektu już masz: <strong>qxjukimckpoyqncrftpw.supabase.co</strong></div>
-    <button class="s-btn" onclick="connect()">🔌 Połącz z Supabase</button>
-    <button class="s-demo" onclick="demo()">Uruchom tryb demo (bez bazy)</button>
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login">
+  <div class="login-card">
+    <!-- Left -->
+    <div class="lc-left">
+      <div>
+        <div class="ll-logo">agent<br>STUmostów</div>
+        <div class="ll-tagline">System zarządzania biurem nieruchomości</div>
+        <div class="ll-divider"></div>
+        <div class="ll-desc">Profesjonalne narzędzie dla agentów nieruchomości. Zarządzaj ofertami, klientami i transakcjami w jednym miejscu.</div>
+      </div>
+      <div class="ll-features">
+        <div class="ll-feat"><span class="ll-feat-icon">🏘️</span>Baza ofert i klientów</div>
+        <div class="ll-feat"><span class="ll-feat-icon">📊</span>Raporty i wykresy prowizji</div>
+        <div class="ll-feat"><span class="ll-feat-icon">🧮</span>Kalkulator prowizji</div>
+        <div class="ll-feat"><span class="ll-feat-icon">🏦</span>Doradcy kredytowi</div>
+        <div class="ll-feat"><span class="ll-feat-icon">✅</span>Zadania dla agentów</div>
+      </div>
+      <div class="ll-bottom">wojciechbrzozowski.pl</div>
+    </div>
+    <!-- Right -->
+    <div class="lc-right">
+      <div class="lr-welcome">Witaj ponownie</div>
+      <div class="lr-title">Zaloguj się do CRM</div>
+      <div class="lr-sub">Wpisz swój email i hasło aby uzyskać dostęp do panelu.</div>
+
+      <div class="fg">
+        <label class="fl">Adres email</label>
+        <input class="fi" id="login-email" type="email" placeholder="twoj@email.pl" autocomplete="email">
+      </div>
+      <div class="fg">
+        <label class="fl">Hasło</label>
+        <div class="pw-wrap">
+          <input class="fi" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="pw-toggle" onclick="togglePw()" type="button" id="pw-eye">👁</button>
+        </div>
+      </div>
+
+      <button class="login-submit" id="login-btn" onclick="doLogin()">Zaloguj się</button>
+
+      <div class="login-loading" id="login-loading">
+        <div class="spin"></div> Logowanie...
+      </div>
+      <div class="login-err" id="login-err"></div>
+
+      <div class="lr-footer">
+        Problemy z logowaniem? Skontaktuj się z administratorem.<br>
+        <a href="https://wojciechbrzozowski.pl" target="_blank">wojciechbrzozowski.pl</a>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- ══════════════════════════════════════
+     APP
+══════════════════════════════════════ -->
 <div class="app" id="app">
+
   <!-- SIDEBAR -->
   <aside class="sb">
     <div class="sb-brand">
-      <div class="sb-logo">🏠 Estate Premium</div>
-      <div class="sb-sub">Panel Agenta</div>
+      <div class="sb-logo">agentSTUmostów</div>
+      <div class="sb-sub">Panel CRM</div>
     </div>
-    <div class="sb-conn"><div class="sb-dot" id="conn-dot"></div><span id="conn-txt">Łączenie...</span></div>
+    <div class="sb-user">
+      <div class="sb-avtr" id="sb-avtr">W</div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-user-name" id="sb-email">—</div>
+        <div class="sb-user-role" id="sb-role">Agent</div>
+      </div>
+      <button class="sb-logout-btn" onclick="doLogout()" title="Wyloguj">✕</button>
+    </div>
+
     <div class="sb-sec">
       <div class="sb-sec-lbl">Główne</div>
       <button class="ni on" data-v="dashboard"><span class="ni-icon">📊</span>Dashboard</button>
@@ -253,108 +531,113 @@ td{padding:10px 15px;font-size:13px;vertical-align:middle}
       <div class="sb-sec-lbl">Narzędzia</div>
       <button class="ni" data-v="zadania"><span class="ni-icon">✅</span>Zadania<span class="ni-badge blue" id="badge-zd">–</span></button>
       <button class="ni" data-v="notatki"><span class="ni-icon">📝</span>Notatki</button>
+      <button class="ni" data-v="proces"><span class="ni-icon">🔄</span>Proces sprzedaży</button>
       <button class="ni" data-v="szablony"><span class="ni-icon">✉️</span>Szablony</button>
     </div>
+
     <div class="sb-foot">
-      <div>agentSTUmostów</div>
-      <a href="https://wojciechbrzozowski.pl" target="_blank">wojciechbrzozowski.pl</a>
-      <button class="reset-btn" onclick="reset()">↩ Zmień połączenie</button>
+      <div class="sb-foot-site"><a href="https://wojciechbrzozowski.pl" target="_blank">wojciechbrzozowski.pl</a></div>
     </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
     <div class="topbar">
-      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-left">
+        <div class="tb-bc" id="tb-bc"></div>
+        <div class="tb-title" id="tb-title">Dashboard</div>
+      </div>
       <div class="tb-right">
-        <button class="btn btn-ghost" onclick="refresh()">↻ Odśwież</button>
-        <button class="btn btn-gold" id="add-btn" onclick="openAdd()">+ Nowa oferta</button>
+        <button class="btn btn-outline" onclick="refresh()">↻ Odśwież</button>
+        <button class="btn btn-red" id="add-btn" onclick="openAdd()">+ Nowa oferta</button>
       </div>
     </div>
-    <div class="content" id="content"><div class="loading"><span class="spin"></span>Wczytywanie...</div></div>
+    <div class="content" id="content">
+      <div class="empty"><div class="spin" style="width:24px;height:24px;border-width:3px"></div></div>
+    </div>
   </main>
 </div>
 
-<!-- MODALS -->
-<!-- Dodaj ofertę -->
+<!-- ══ MODALS ══ -->
+<!-- Oferta -->
 <div class="ovl" id="m-oferta" onclick="closeM('m-oferta')">
   <div class="modal" onclick="event.stopPropagation()">
     <button class="mcls" onclick="closeM('m-oferta')">✕</button>
     <div class="mtitle" id="m-oferta-title">Nowa oferta</div>
     <input type="hidden" id="f-id">
     <div class="fgrid">
-      <div class="fg"><label class="fl">Nazwa *</label><input class="fi" id="f-nazwa" placeholder="Apartament Śródmieście"></div>
-      <div class="fg"><label class="fl">Adres</label><input class="fi" id="f-adres" placeholder="ul. Przykładowa 1, Warszawa"></div>
-      <div class="fg"><label class="fl">Typ</label><select class="fs" id="f-typ"><option>Sprzedaż</option><option>Wynajem</option></select></div>
-      <div class="fg"><label class="fl">Cena (zł)</label><input class="fi" id="f-cena" type="number" placeholder="750000"></div>
-      <div class="fg"><label class="fl">Metraż (m²)</label><input class="fi" id="f-metraz" type="number" placeholder="60"></div>
-      <div class="fg"><label class="fl">Pokoje</label><input class="fi" id="f-pokoje" type="number" placeholder="3"></div>
-      <div class="fg"><label class="fl">Agent</label><select class="fs" id="f-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
-      <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option>Aktywna</option><option>W negocjacji</option><option>Zarezerwowana</option><option>Sprzedana</option><option>Wycofana</option></select></div>
+      <div class="mfg"><label class="mfl">Nazwa *</label><input class="mfi" id="f-nazwa" placeholder="Apartament Śródmieście"></div>
+      <div class="mfg"><label class="mfl">Adres</label><input class="mfi" id="f-adres" placeholder="ul. Przykładowa 1, Warszawa"></div>
+      <div class="mfg"><label class="mfl">Typ</label><select class="mfs" id="f-typ"><option>Sprzedaż</option><option>Wynajem</option></select></div>
+      <div class="mfg"><label class="mfl">Cena (zł)</label><input class="mfi" id="f-cena" type="number" placeholder="750000"></div>
+      <div class="mfg"><label class="mfl">Metraż (m²)</label><input class="mfi" id="f-metraz" type="number" placeholder="60"></div>
+      <div class="mfg"><label class="mfl">Pokoje</label><input class="mfi" id="f-pokoje" type="number" placeholder="3"></div>
+      <div class="mfg"><label class="mfl">Agent</label><select class="mfs" id="f-agent"><option>Wojciech B.</option><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option></select></div>
+      <div class="mfg"><label class="mfl">Status</label><select class="mfs" id="f-status"><option>Aktywna</option><option>W negocjacji</option><option>Zarezerwowana</option><option>Sprzedana</option><option>Wycofana</option></select></div>
     </div>
-    <div class="fg"><label class="fl">Opis</label><textarea class="ft" id="f-opis" placeholder="Opis nieruchomości..."></textarea></div>
+    <div class="mfg"><label class="mfl">Opis</label><textarea class="mft" id="f-opis" placeholder="Opis nieruchomości..."></textarea></div>
     <div class="mact">
-      <button class="btn btn-gold" onclick="saveOferta()">💾 Zapisz</button>
+      <button class="btn btn-red" onclick="saveOferta()">💾 Zapisz</button>
       <button class="btn btn-ghost" onclick="closeM('m-oferta')">Anuluj</button>
-      <button class="btn btn-danger" id="f-del-btn" style="display:none" onclick="deleteOferta()">🗑️ Usuń</button>
+      <button class="btn btn-danger" id="f-del" style="display:none" onclick="delOferta()">🗑️ Usuń</button>
     </div>
   </div>
 </div>
 
-<!-- Dodaj klienta -->
+<!-- Klient -->
 <div class="ovl" id="m-klient" onclick="closeM('m-klient')">
   <div class="modal" onclick="event.stopPropagation()">
     <button class="mcls" onclick="closeM('m-klient')">✕</button>
     <div class="mtitle" id="m-klient-title">Nowy klient</div>
     <input type="hidden" id="k-id">
     <div class="fgrid">
-      <div class="fg"><label class="fl">Imię i nazwisko *</label><input class="fi" id="k-imie" placeholder="Jan Kowalski"></div>
-      <div class="fg"><label class="fl">Telefon</label><input class="fi" id="k-tel" placeholder="+48 600 000 000"></div>
-      <div class="fg"><label class="fl">Email</label><input class="fi" id="k-email" type="email" placeholder="jan@email.pl"></div>
-      <div class="fg"><label class="fl">Typ klienta</label><select class="fs" id="k-typ"><option>Kupujący</option><option>Sprzedający</option><option>Najemca</option></select></div>
-      <div class="fg"><label class="fl">Status</label><select class="fs" id="k-status"><option>Nowy</option><option>W kontakcie</option><option>Spotkanie</option><option>Aktywny</option><option>Zamknięty</option></select></div>
-      <div class="fg"><label class="fl">Źródło</label><select class="fs" id="k-zrodlo"><option>Portal</option><option>Polecenie</option><option>Social Media</option><option>Bezpośredni</option></select></div>
-      <div class="fg"><label class="fl">Agent</label><select class="fs" id="k-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
-      <div class="fg"><label class="fl">Budżet / Cel</label><input class="fi" id="k-budzet" placeholder="do 800 000 zł"></div>
+      <div class="mfg"><label class="mfl">Imię i nazwisko *</label><input class="mfi" id="k-imie" placeholder="Jan Kowalski"></div>
+      <div class="mfg"><label class="mfl">Telefon</label><input class="mfi" id="k-tel" placeholder="+48 600 000 000"></div>
+      <div class="mfg"><label class="mfl">Email</label><input class="mfi" id="k-email" type="email" placeholder="jan@email.pl"></div>
+      <div class="mfg"><label class="mfl">Typ</label><select class="mfs" id="k-typ"><option>Kupujący</option><option>Sprzedający</option><option>Najemca</option></select></div>
+      <div class="mfg"><label class="mfl">Status</label><select class="mfs" id="k-status"><option>Nowy</option><option>W kontakcie</option><option>Spotkanie</option><option>Aktywny</option><option>Zamknięty</option></select></div>
+      <div class="mfg"><label class="mfl">Źródło</label><select class="mfs" id="k-zrodlo"><option>Portal</option><option>Polecenie</option><option>Social Media</option><option>Bezpośredni</option></select></div>
+      <div class="mfg"><label class="mfl">Agent</label><select class="mfs" id="k-agent"><option>Wojciech B.</option><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option></select></div>
+      <div class="mfg"><label class="mfl">Budżet / Cel</label><input class="mfi" id="k-budzet" placeholder="do 800 000 zł"></div>
     </div>
-    <div class="fg"><label class="fl">Notatka</label><textarea class="ft" id="k-notatka" placeholder="Dodatkowe informacje..."></textarea></div>
+    <div class="mfg"><label class="mfl">Notatka</label><textarea class="mft" id="k-notatka" placeholder="Dodatkowe informacje..."></textarea></div>
     <div class="mact">
-      <button class="btn btn-gold" onclick="saveKlient()">💾 Zapisz</button>
+      <button class="btn btn-red" onclick="saveKlient()">💾 Zapisz</button>
       <button class="btn btn-ghost" onclick="closeM('m-klient')">Anuluj</button>
-      <button class="btn btn-danger" id="k-del-btn" style="display:none" onclick="deleteKlient()">🗑️ Usuń</button>
+      <button class="btn btn-danger" id="k-del" style="display:none" onclick="delKlient()">🗑️ Usuń</button>
     </div>
   </div>
 </div>
 
-<!-- Dodaj zadanie -->
+<!-- Zadanie -->
 <div class="ovl" id="m-zadanie" onclick="closeM('m-zadanie')">
   <div class="modal modal-sm" onclick="event.stopPropagation()">
     <button class="mcls" onclick="closeM('m-zadanie')">✕</button>
     <div class="mtitle">Nowe zadanie</div>
-    <div class="fg"><label class="fl">Treść *</label><input class="fi" id="z-tresc" placeholder="Zadzwoń do klienta..."></div>
+    <div class="mfg"><label class="mfl">Treść *</label><input class="mfi" id="z-tresc" placeholder="Zadzwoń do klienta..."></div>
     <div class="fgrid">
-      <div class="fg"><label class="fl">Priorytet</label><select class="fs" id="z-prio"><option>Wysoki</option><option>Średni</option><option>Niski</option></select></div>
-      <div class="fg"><label class="fl">Agent</label><select class="fs" id="z-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
-      <div class="fg" style="grid-column:1/-1"><label class="fl">Termin</label><input class="fi" id="z-termin" type="date"></div>
+      <div class="mfg"><label class="mfl">Priorytet</label><select class="mfs" id="z-prio"><option>Wysoki</option><option selected>Średni</option><option>Niski</option></select></div>
+      <div class="mfg"><label class="mfl">Agent</label><select class="mfs" id="z-agent"><option>Wojciech B.</option><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option></select></div>
+      <div class="mfg" style="grid-column:1/-1"><label class="mfl">Termin</label><input class="mfi" id="z-termin" type="date"></div>
     </div>
     <div class="mact">
-      <button class="btn btn-gold" onclick="saveZadanie()">💾 Zapisz</button>
+      <button class="btn btn-red" onclick="saveZadanie()">💾 Zapisz</button>
       <button class="btn btn-ghost" onclick="closeM('m-zadanie')">Anuluj</button>
     </div>
   </div>
 </div>
 
-<!-- Dodaj notatkę -->
+<!-- Notatka -->
 <div class="ovl" id="m-notatka" onclick="closeM('m-notatka')">
   <div class="modal modal-sm" onclick="event.stopPropagation()">
     <button class="mcls" onclick="closeM('m-notatka')">✕</button>
     <div class="mtitle">Nowa notatka</div>
-    <div class="fg"><label class="fl">Klient *</label><input class="fi" id="n-klient" placeholder="Jan Kowalski"></div>
-    <div class="fg"><label class="fl">Typ kontaktu</label><select class="fs" id="n-typ"><option>Telefon</option><option>Spotkanie</option><option>Email</option><option>SMS</option></select></div>
-    <div class="fg"><label class="fl">Treść</label><textarea class="ft" id="n-tresc" placeholder="Klient zainteresowany..."></textarea></div>
-    <div class="fg"><label class="fl">Agent</label><select class="fs" id="n-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
+    <div class="mfg"><label class="mfl">Klient *</label><input class="mfi" id="n-klient" placeholder="Jan Kowalski"></div>
+    <div class="mfg"><label class="mfl">Typ kontaktu</label><select class="mfs" id="n-typ"><option>Telefon</option><option>Spotkanie</option><option>Email</option><option>SMS</option></select></div>
+    <div class="mfg"><label class="mfl">Treść</label><textarea class="mft" id="n-tresc" placeholder="Klient zainteresowany..."></textarea></div>
+    <div class="mfg"><label class="mfl">Agent</label><select class="mfs" id="n-agent"><option>Wojciech B.</option><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option></select></div>
     <div class="mact">
-      <button class="btn btn-gold" onclick="saveNotatka()">💾 Zapisz</button>
+      <button class="btn btn-red" onclick="saveNotatka()">💾 Zapisz</button>
       <button class="btn btn-ghost" onclick="closeM('m-notatka')">Anuluj</button>
     </div>
   </div>
@@ -363,87 +646,190 @@ td{padding:10px 15px;font-size:13px;vertical-align:middle}
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════
-// SUPABASE CONFIG
-// ═══════════════════════════════════════════════
-let SB_URL = '', SB_KEY = '', isDemo = false;
-let db = { oferty:[], klienci:[], zadania:[], pokazy:[], kredyty:[], notatki:[] };
-let activeFilter = 'all';
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const SB_URL = 'https://qxjukimckpoyqncrftpw.supabase.co';
+let SB_KEY = ''; // anon key - wpisywany raz
+let SB_TOKEN = ''; // auth token po logowaniu
+let currentUser = null;
 let currentView = 'dashboard';
+let activeFilter = 'all';
+let db = { oferty:[], klienci:[], zadania:[], pokazy:[], kredyty:[], notatki:[] };
 
-const DEMO_DATA = {
-  oferty:[
-    {id:'1',nazwa:'Apartament Śródmieście',adres:'ul. Marszałkowska 12, Warszawa',typ:'Sprzedaż',cena:890000,metraz:68,pokoje:3,agent:'Anna K.',status:'Aktywna',opis:'Elegancki apartament w sercu Warszawy.',created_at:'2026-04-02'},
-    {id:'2',nazwa:'Dom jednorodzinny',adres:'ul. Leśna 7, Piaseczno',typ:'Sprzedaż',cena:1250000,metraz:145,pokoje:5,agent:'Marek W.',status:'W negocjacji',opis:'Dom z ogrodem 600m².',created_at:'2026-03-28'},
-    {id:'3',nazwa:'Kawalerka Mokotów',adres:'ul. Puławska 55, Warszawa',typ:'Wynajem',cena:2800,metraz:32,pokoje:1,agent:'Anna K.',status:'Zarezerwowana',opis:'Kawalerka po remoncie.',created_at:'2026-03-25'},
-    {id:'4',nazwa:'Penthouse Wilanów',adres:'ul. Klimczaka 1, Warszawa',typ:'Sprzedaż',cena:3400000,metraz:210,pokoje:6,agent:'Piotr S.',status:'Aktywna',opis:'Penthouse z tarasem 80m².',created_at:'2026-03-20'},
-    {id:'5',nazwa:'Mieszkanie 3-pok.',adres:'ul. Grunwaldzka 88, Kraków',typ:'Sprzedaż',cena:720000,metraz:72,pokoje:3,agent:'Marek W.',status:'Sprzedana',opis:'Słoneczne mieszkanie.',created_at:'2026-03-10'},
-  ],
-  klienci:[
-    {id:'1',imie_nazwisko:'Tomasz Kowalski',telefon:'+48 600 111 222',email:'',typ_klienta:'Kupujący',status:'Nowy',budzet:'do 800 000 zł',agent:'Anna K.',zrodlo:'Portal',notatka:'Chce 3 pokoje'},
-    {id:'2',imie_nazwisko:'Marta Nowak',telefon:'+48 601 222 333',email:'',typ_klienta:'Sprzedający',status:'W kontakcie',budzet:'dom Pruszków',agent:'Marek W.',zrodlo:'Polecenie',notatka:'Wycena w toku'},
-    {id:'3',imie_nazwisko:'Krzysztof Zając',telefon:'+48 602 333 444',email:'',typ_klienta:'Najemca',status:'Spotkanie',budzet:'biuro 80-120m²',agent:'Anna K.',zrodlo:'Portal',notatka:'Centrum'},
-    {id:'4',imie_nazwisko:'Agata Wiśniewska',telefon:'+48 603 444 555',email:'',typ_klienta:'Kupujący',status:'Nowy',budzet:'działka Mazowsze',agent:'Marek W.',zrodlo:'Social Media',notatka:'Pilne'},
-    {id:'5',imie_nazwisko:'Paweł Dąbrowski',telefon:'+48 604 555 666',email:'',typ_klienta:'Najemca',status:'W kontakcie',budzet:'kawalerka do 3500/mies',agent:'Piotr S.',zrodlo:'Portal',notatka:''},
-  ],
-  zadania:[
-    {id:'1',tresc:'Zadzwoń do Tomasza Kowalskiego – follow-up po pokazie',status:'Do zrobienia',priorytet:'Wysoki',agent:'Anna K.',termin:'2026-05-20',ukonczone:false},
-    {id:'2',tresc:'Prześlij umowę przedwstępną – Dom Piaseczno',status:'Do zrobienia',priorytet:'Wysoki',agent:'Marek W.',termin:'2026-05-21',ukonczone:false},
-    {id:'3',tresc:'Aktualizacja zdjęć Penthouse Wilanów',status:'Do zrobienia',priorytet:'Średni',agent:'Piotr S.',termin:'2026-05-19',ukonczone:false},
-    {id:'4',tresc:'Przygotuj wycenę działki Mazowsze',status:'Do zrobienia',priorytet:'Wysoki',agent:'Marek W.',termin:'2026-05-25',ukonczone:false},
-    {id:'5',tresc:'Spotkanie z deweloperem – Ursynów',status:'Ukończone',priorytet:'Średni',agent:'Anna K.',termin:'2026-05-15',ukonczone:true},
-  ],
-  pokazy:[
-    {id:'1',nieruchomosc:'Apartament Śródmieście',klient:'Tomasz Kowalski',data_czas:'Dziś 14:00',agent:'Anna K.',status:'Potwierdzony'},
-    {id:'2',nieruchomosc:'Dom Piaseczno',klient:'Marta Nowak',data_czas:'Jutro 11:00',agent:'Marek W.',status:'Zaplanowany'},
-    {id:'3',nieruchomosc:'Penthouse Wilanów',klient:'VIP klient',data_czas:'11.05 16:00',agent:'Piotr S.',status:'Potwierdzony'},
-    {id:'4',nieruchomosc:'Kawalerka Mokotów',klient:'Paweł Dąbrowski',data_czas:'12.05 10:00',agent:'Anna K.',status:'Zaplanowany'},
-  ],
-  kredyty:[
-    {id:'1',klient:'Tomasz Kowalski',doradca:'Ela Mrowiec',status:'Zrealizowany',data_wyslania:'2026-03-05',kwota_kredytu:450000,prowizja_biuro:2700,rozliczone:true,faktura_oplacona:true,zdolnosc:'Ma zdolność',zdolnosc_kwota:520000},
-    {id:'2',klient:'Marta Nowak',doradca:'Ela Mrowiec',status:'W trakcie',data_wyslania:'2026-03-10',kwota_kredytu:620000,prowizja_biuro:3720,rozliczone:false,faktura_oplacona:false,zdolnosc:'Ma zdolność',zdolnosc_kwota:680000},
-    {id:'3',klient:'Agata Wiśniewska',doradca:'Ela Mrowiec',status:'W trakcie',data_wyslania:'2026-03-18',kwota_kredytu:380000,prowizja_biuro:2280,rozliczone:false,faktura_oplacona:false,zdolnosc:'Brak zdolności',zdolnosc_kwota:0},
-    {id:'4',klient:'Krzysztof Lewandowski',doradca:'Jarek Bartosik',status:'Zrealizowany',data_wyslania:'2026-03-08',kwota_kredytu:540000,prowizja_biuro:3240,rozliczone:true,faktura_oplacona:false,zdolnosc:'Ma zdolność',zdolnosc_kwota:600000},
-    {id:'5',klient:'Beata Kowalczyk',doradca:'Jarek Bartosik',status:'W trakcie',data_wyslania:'2026-03-14',kwota_kredytu:320000,prowizja_biuro:1920,rozliczone:false,faktura_oplacona:false,zdolnosc:'Weryfikacja',zdolnosc_kwota:0},
-  ],
-  notatki:[
-    {id:'1',klient:'Tomasz Kowalski',typ_kontaktu:'Telefon',tresc:'Klient zainteresowany apartamentem na Marszałkowskiej. Budżet elastyczny do 900k.',agent:'Anna K.',created_at:'2026-04-10'},
-    {id:'2',klient:'Marta Nowak',typ_kontaktu:'Spotkanie',tresc:'Spotkanie w Pruszkowie. Klientka chce wystawić za 1,1 mln.',agent:'Marek W.',created_at:'2026-04-09'},
-    {id:'3',klient:'Paweł Dąbrowski',typ_kontaktu:'SMS',tresc:'Potwierdził zainteresowanie kawalerką. Prosi o dostęp w sobotę.',agent:'Piotr S.',created_at:'2026-04-08'},
-  ],
-};
-
-// ── Supabase REST API ──
-async function sbFetch(table, method='GET', body=null, id=null) {
-  if (isDemo) return null;
-  let url = `${SB_URL}/rest/v1/${table}`;
-  if (id) url += `?id=eq.${id}`;
-  const opts = {
-    method,
-    headers: {
-      'apikey': SB_KEY,
-      'Authorization': `Bearer ${SB_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': method==='POST' ? 'return=representation' : 'return=minimal',
-    }
-  };
-  if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(url + (method==='GET' ? '?order=created_at.desc&limit=100' : ''), opts);
-  if (!r.ok) { const e = await r.text(); console.error(table, e); return null; }
-  if (method==='DELETE' || (method==='PATCH' && !opts.headers.Prefer.includes('representation'))) return true;
-  const text = await r.text();
-  return text ? JSON.parse(text) : true;
+// ═══════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════
+function togglePw() {
+  const inp = document.getElementById('login-pass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
-async function loadTable(table) {
-  const data = await sbFetch(table);
-  if (data) db[table] = data;
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const err   = document.getElementById('login-err');
+  const btn   = document.getElementById('login-btn');
+  const loading = document.getElementById('login-loading');
+
+  if (!email || !pass) {
+    showErr('Wpisz email i hasło');
+    return;
+  }
+
+  // Get anon key from localStorage or prompt
+  let anonKey = localStorage.getItem('sb_anon_key');
+  if (!anonKey) {
+    anonKey = prompt('Wpisz Supabase Anon Key (tylko raz):');
+    if (!anonKey) return;
+    localStorage.setItem('sb_anon_key', anonKey);
+  }
+  SB_KEY = anonKey;
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  loading.classList.add('show');
+  err.classList.remove('show');
+
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password: pass })
+    });
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      showErr(data.error_description || data.message || 'Nieprawidłowy email lub hasło');
+      btn.disabled = false;
+      btn.textContent = 'Zaloguj się';
+      loading.classList.remove('show');
+      return;
+    }
+
+    SB_TOKEN = data.access_token;
+    currentUser = data.user;
+
+    // Save session
+    localStorage.setItem('sb_token', SB_TOKEN);
+    localStorage.setItem('sb_user', JSON.stringify(currentUser));
+
+    launchApp();
+
+  } catch(e) {
+    showErr('Błąd połączenia. Sprawdź internet.');
+    btn.disabled = false;
+    btn.textContent = 'Zaloguj się';
+    loading.classList.remove('show');
+  }
+}
+
+function showErr(msg) {
+  const err = document.getElementById('login-err');
+  err.textContent = msg;
+  err.classList.add('show');
+}
+
+async function doLogout() {
+  try {
+    await sbFetch('/auth/v1/logout', 'POST');
+  } catch(e){}
+  localStorage.removeItem('sb_token');
+  localStorage.removeItem('sb_user');
+  SB_TOKEN = '';
+  currentUser = null;
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('login').classList.remove('gone');
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').textContent = 'Zaloguj się';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-loading').classList.remove('show');
+}
+
+function launchApp() {
+  document.getElementById('login').classList.add('gone');
+  document.getElementById('app').classList.add('on');
+
+  // Set user info in sidebar
+  const email = currentUser?.email || '—';
+  document.getElementById('sb-email').textContent = email;
+  document.getElementById('sb-avtr').textContent = (email[0]||'U').toUpperCase();
+
+  // Role based on email (simple — can expand)
+  const isOwner = email.includes('wojciech') || email.includes('brzozowski');
+  document.getElementById('sb-role').textContent = isOwner ? 'Właściciel' : 'Agent';
+
+  setupNav();
+  loadAll();
+}
+
+// ═══════════════════════════════════════════════════
+// SUPABASE API
+// ═══════════════════════════════════════════════════
+async function sbFetch(path, method='GET', body=null) {
+  const headers = {
+    'apikey': SB_KEY,
+    'Authorization': `Bearer ${SB_TOKEN}`,
+    'Content-Type': 'application/json',
+    'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal',
+  };
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(SB_URL + path, opts);
+  if (r.status === 401) { doLogout(); return null; }
+  if (!r.ok) { console.error(path, await r.text()); return null; }
+  const txt = await r.text();
+  return txt ? JSON.parse(txt) : true;
+}
+
+async function sbQuery(table) {
+  return await sbFetch(`/rest/v1/${table}?order=created_at.desc&limit=200`);
+}
+
+async function sbInsert(table, data) {
+  return await sbFetch(`/rest/v1/${table}`, 'POST', data);
+}
+
+async function sbUpdate(table, id, data) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey':SB_KEY, 'Authorization':`Bearer ${SB_TOKEN}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+
+async function sbDelete(table, id) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey':SB_KEY, 'Authorization':`Bearer ${SB_TOKEN}` }
+  });
+  return r.ok;
 }
 
 async function loadAll() {
-  await Promise.all(['oferty','klienci','zadania','pokazy','kredyty','notatki'].map(loadTable));
+  const [of,kl,zd,pk,kr,nt] = await Promise.all([
+    sbQuery('oferty'), sbQuery('klienci'), sbQuery('zadania'),
+    sbQuery('pokazy'), sbQuery('kredyty'), sbQuery('notatki')
+  ]);
+  if(of) db.oferty = of;
+  if(kl) db.klienci = kl;
+  if(zd) db.zadania = zd;
+  if(pk) db.pokazy = pk;
+  if(kr) db.kredyty = kr;
+  if(nt) db.notatki = nt;
   updateBadges();
   renderView(currentView);
+}
+
+async function refresh() {
+  notify('Odświeżam dane...');
+  await loadAll();
+  notify('Zaktualizowano ✓');
 }
 
 function updateBadges() {
@@ -452,64 +838,22 @@ function updateBadges() {
   document.getElementById('badge-zd').textContent = db.zadania.filter(z=>!z.ukonczone).length;
 }
 
-// ── Connect ──
-async function connect() {
-  const url = document.getElementById('sb-url').value.trim().replace(/\/$/, '');
-  const key = document.getElementById('sb-key').value.trim();
-  if (!url || !key) { notify('Uzupełnij URL i klucz ⚠️'); return; }
-  notify('Łączenie z Supabase...');
-  try {
-    const r = await fetch(`${url}/rest/v1/oferty?limit=1`, {
-      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
-    });
-    if (!r.ok) { notify('Błąd połączenia — sprawdź dane ❌'); return; }
-    SB_URL = url; SB_KEY = key;
-    localStorage.setItem('sb_url', url);
-    localStorage.setItem('sb_key', key);
-    isDemo = false;
-    launch(true);
-    await loadAll();
-  } catch(e) { notify('Błąd sieci ❌'); }
-}
-
-function demo() {
-  isDemo = true;
-  db = JSON.parse(JSON.stringify(DEMO_DATA));
-  launch(false);
-  updateBadges();
-  renderView('dashboard');
-}
-
-function launch(connected) {
-  document.getElementById('setup').classList.add('gone');
-  document.getElementById('app').classList.add('on');
-  const dot = document.getElementById('conn-dot');
-  const txt = document.getElementById('conn-txt');
-  if (connected) { dot.classList.add('ok'); txt.textContent = 'Supabase połączony'; }
-  else { txt.textContent = 'Tryb demo'; }
-  setupNav();
-}
-
-function reset() { localStorage.clear(); location.reload(); }
-async function refresh() {
-  if (isDemo) { notify('Tryb demo — brak bazy'); return; }
-  notify('Odświeżanie...');
-  await loadAll();
-  notify('Zaktualizowano ✓');
-}
-
-// ── Nav ──
-const VIEW_TITLES = {
-  dashboard:'Dashboard',oferty:'Oferty',klienci:'Klienci',kanban:'Lejek sprzedaży',
-  pokazy:'Pokazy',kalkulator:'Kalkulator prowizji',kredyty:'Doradcy kredytowi',
-  raporty:'Wykresy & Raporty',zadania:'Zadania',notatki:'Notatki',szablony:'Szablony',
-};
-const ADD_LABELS = {
-  oferty:'+ Nowa oferta',klienci:'+ Nowy klient',zadania:'+ Nowe zadanie',notatki:'+ Nowa notatka'
-};
-const ADD_ACTIONS = {
-  oferty:()=>openAdd('oferta'),klienci:()=>openAdd('klient'),
-  zadania:()=>openAdd('zadanie'),notatki:()=>openAdd('notatka'),
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+const VIEW_META = {
+  dashboard: { title:'Dashboard', bc:'' },
+  oferty:    { title:'Oferty', bc:'Dashboard → Oferty', add:'+ Nowa oferta', addFn:()=>openAdd('oferta') },
+  klienci:   { title:'Klienci', bc:'Dashboard → Klienci', add:'+ Nowy klient', addFn:()=>openAdd('klient') },
+  kanban:    { title:'Lejek sprzedaży', bc:'Dashboard → Lejek' },
+  pokazy:    { title:'Pokazy', bc:'Dashboard → Pokazy', add:'+ Nowy pokaz' },
+  kalkulator:{ title:'Kalkulator prowizji', bc:'Finanse → Kalkulator' },
+  kredyty:   { title:'Doradcy kredytowi', bc:'Finanse → Doradcy' },
+  raporty:   { title:'Wykresy & Raporty', bc:'Finanse → Raporty' },
+  zadania:   { title:'Zadania', bc:'Narzędzia → Zadania', add:'+ Nowe zadanie', addFn:()=>openAdd('zadanie') },
+  notatki:   { title:'Notatki z rozmów', bc:'Narzędzia → Notatki', add:'+ Nowa notatka', addFn:()=>openAdd('notatka') },
+  proces:    { title:'Proces sprzedaży', bc:'Narzędzia → Proces' },
+  szablony:  { title:'Szablony wiadomości', bc:'Narzędzia → Szablony' },
 };
 
 function setupNav() {
@@ -520,13 +864,15 @@ function setupNav() {
 
 function renderView(v) {
   currentView = v;
+  activeFilter = 'all';
   document.querySelectorAll('.ni[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v===v));
-  document.getElementById('tb-title').textContent = VIEW_TITLES[v]||v;
+  const m = VIEW_META[v] || VIEW_META.dashboard;
+  document.getElementById('tb-title').textContent = m.title;
+  document.getElementById('tb-bc').textContent = m.bc;
   const ab = document.getElementById('add-btn');
-  if (ADD_LABELS[v]) {
-    ab.style.display=''; ab.textContent=ADD_LABELS[v];
-    ab.onclick = ADD_ACTIONS[v] || openAdd;
-  } else { ab.style.display='none'; }
+  if (m.add) { ab.style.display=''; ab.textContent=m.add; ab.onclick = m.addFn||openAdd; }
+  else ab.style.display='none';
+
   const c = document.getElementById('content');
   switch(v) {
     case 'dashboard':  c.innerHTML = vDashboard(); break;
@@ -539,210 +885,269 @@ function renderView(v) {
     case 'raporty':    c.innerHTML = vRaporty(); break;
     case 'zadania':    c.innerHTML = vZadania(); break;
     case 'notatki':    c.innerHTML = vNotatki(); break;
+    case 'proces':     c.innerHTML = vProces(); break;
     case 'szablony':   c.innerHTML = vSzablony(); break;
     default:           c.innerHTML = vDashboard();
   }
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // HELPERS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function fmtCena(o) {
   if (!o.cena) return '–';
   return Number(o.cena).toLocaleString('pl') + (o.typ==='Wynajem' ? ' zł/mies.' : ' zł');
 }
 function fmtN(n) { return n ? Number(n).toLocaleString('pl')+' zł' : '–'; }
-function fmtDate(d) { if(!d) return '–'; return new Date(d).toLocaleDateString('pl'); }
+function fmtDate(d) {
+  if (!d) return '–';
+  try { return new Date(d).toLocaleDateString('pl', {day:'2-digit',month:'2-digit',year:'numeric'}); }
+  catch(e) { return d; }
+}
 
-const AC = ['#c4954a','#3a6fc0','#4a9c6f','#9c4a4a','#6a4a9c','#c0503a','#4a9c9c'];
+const AVTR_COLORS = ['#b01f23','#2d7a50','#1e5fa0','#7a2d6e','#c46020','#4a4a7a'];
 function avtrOf(name) {
   const w = (name||'').split(' ');
-  const ini = w.slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
-  const col = AC[(name.charCodeAt(0)||0) % AC.length];
-  return `<div class="avtr" style="background:${col};width:32px;height:32px;font-size:11px">${ini}</div>`;
+  const ini = w.slice(0,2).map(x=>(x[0]||'').toUpperCase()).join('');
+  const col = AVTR_COLORS[(name.charCodeAt(0)||0) % AVTR_COLORS.length];
+  return { ini, col };
+}
+
+function avatarHtml(name, size=34) {
+  const { ini, col } = avtrOf(name);
+  return `<div class="avtr" style="background:${col};width:${size}px;height:${size}px;font-size:${Math.floor(size*.34)}px">${ini}</div>`;
 }
 
 function stag(s) {
-  const m={'Aktywna':'s-active','W negocjacji':'s-pend','Zarezerwowana':'s-res','Sprzedana':'s-sold','Wycofana':'s-sold','Nowy':'s-active','W kontakcie':'s-pend','Spotkanie':'s-res','Aktywny':'s-active','Zamknięty':'s-sold','Ukończone':'s-sold','Do zrobienia':'s-active','Zaplanowany':'s-pend','Potwierdzony':'s-active'};
+  const m = {
+    'Aktywna':'s-active','Aktywny':'s-active','Nowy':'s-active',
+    'W negocjacji':'s-pend','W kontakcie':'s-pend','Do zrobienia':'s-pend',
+    'Zarezerwowana':'s-res','Spotkanie':'s-res','Zaplanowany':'s-res','Potwierdzony':'s-res',
+    'Sprzedana':'s-sold','Zamknięty':'s-sold','Wycofana':'s-sold','Ukończone':'s-sold',
+  };
   return `<span class="stag ${m[s]||'s-sold'}"><span class="sdot"></span>${s}</span>`;
 }
 
 function zbadge(z) {
-  const m={'Ma zdolność':['var(--green-l)','#6fcf97','✅'],'Brak zdolności':['var(--red-l)','#e07060','❌'],'Weryfikacja':['var(--blue-l)','#7eb3f0','🔍']};
-  const [bg,col,icon]=m[z]||m['Weryfikacja'];
+  const m = {
+    'Ma zdolność': ['var(--green-l)','var(--green)','✅'],
+    'Brak zdolności': ['var(--red-l)','var(--red)','❌'],
+    'Weryfikacja': ['var(--blue-l)','var(--blue)','🔍'],
+  };
+  const [bg,col,icon] = m[z] || m['Weryfikacja'];
   return `<span class="zbadge" style="background:${bg};color:${col}">${icon} ${z||'Weryfikacja'}</span>`;
 }
 
-// ═══════════════════════════════════════════════
+function filterBar(filters, active, onChange) {
+  return `<div class="filters">${filters.map(([f,l])=>
+    `<button class="fb ${active===f?'on':''}" onclick="${onChange}('${f}',this)">${l}</button>`
+  ).join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════════
 // VIEWS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 
 function vDashboard() {
   const aktywne = db.oferty.filter(o=>o.status==='Aktywna');
   const sprzedane = db.oferty.filter(o=>o.status==='Sprzedana');
-  const nowe = db.klienci.filter(k=>k.status==='Nowy');
-  const otwarte = db.zadania.filter(z=>!z.ukonczone);
+  const zadOtwarte = db.zadania.filter(z=>!z.ukonczone);
 
   return `
-<div class="stats">
-  <div class="stat g" onclick="renderView('oferty')">
-    <div class="stat-lbl">Aktywne oferty</div>
-    <div class="stat-val">${aktywne.length}</div>
-    <div class="stat-ch up">↑ z ${db.oferty.length} łącznie</div>
-  </div>
-  <div class="stat gr">
-    <div class="stat-lbl">Sprzedane</div>
-    <div class="stat-val">${sprzedane.length}</div>
-    <div class="stat-ch up">✓ sfinalizowane</div>
-  </div>
-  <div class="stat bl" onclick="renderView('klienci')">
-    <div class="stat-lbl">Klienci łącznie</div>
-    <div class="stat-val">${db.klienci.length}</div>
-    <div class="stat-ch up">${nowe.length} nowych</div>
-  </div>
-  <div class="stat re" onclick="renderView('zadania')">
-    <div class="stat-lbl">Otwarte zadania</div>
-    <div class="stat-val">${otwarte.length}</div>
-    <div class="stat-ch ${otwarte.length>3?'dn':'up'}">${otwarte.length>3?'⚠️ Do zrobienia':'✓ Pod kontrolą'}</div>
-  </div>
+<div class="stats-grid">
+  ${[
+    {label:'Aktywne oferty', val:aktywne.length, cls:'red', ch:`${db.oferty.length} łącznie`, up:true, go:'oferty'},
+    {label:'Sprzedane', val:sprzedane.length, cls:'green', ch:'sfinalizowane', up:true, go:'oferty'},
+    {label:'Klienci', val:db.klienci.length, cls:'blue', ch:`${db.klienci.filter(k=>k.status==='Nowy').length} nowych`, up:true, go:'klienci'},
+    {label:'Otwarte zadania', val:zadOtwarte.length, cls:'gray', ch:zadOtwarte.length>3?'Do zrobienia':'Pod kontrolą', up:zadOtwarte.length<=3, go:'zadania'},
+  ].map(s=>`
+    <div class="stat-card ${s.cls}" onclick="renderView('${s.go}')">
+      <div class="stat-lbl">${s.label}</div>
+      <div class="stat-val">${s.val}</div>
+      <div class="stat-ch ${s.up?'up':'dn'}">${s.up?'↑':'⚠️'} ${s.ch}</div>
+    </div>`).join('')}
 </div>
 
 <div class="shdr">
   <div class="stitle">Aktywne oferty</div>
-  <button class="btn btn-ghost" onclick="renderView('oferty')" style="font-size:11px">Wszystkie →</button>
+  <button class="btn btn-ghost btn-sm" onclick="renderView('oferty')">Wszystkie →</button>
 </div>
 <div class="tw" style="margin-bottom:22px">
   <table><thead><tr>
     <th>Nieruchomość</th><th>Typ</th><th>Metraż</th><th>Cena</th><th>Agent</th><th>Status</th>
   </tr></thead><tbody>
-  ${db.oferty.slice(0,5).map(o=>`<tr onclick="editOferta('${o.id}')">
-    <td><div class="pname">${o.nazwa}</div><div class="paddr">${o.adres}</div></td>
-    <td><span class="type-tag">${o.typ}</span></td>
-    <td>${o.metraz} m²</td>
-    <td class="pname">${fmtCena(o)}</td>
-    <td>${o.agent}</td>
-    <td>${stag(o.status)}</td>
-  </tr>`).join('')}
+  ${db.oferty.slice(0,5).map(o=>`
+    <tr onclick="editOferta('${o.id}')">
+      <td><div class="pname">${o.nazwa||'–'}</div><div class="paddr">${o.adres||''}</div></td>
+      <td><span class="type-tag">${o.typ||'–'}</span></td>
+      <td>${o.metraz||'–'} m²</td>
+      <td style="font-weight:500">${fmtCena(o)}</td>
+      <td>${o.agent||'–'}</td>
+      <td>${stag(o.status||'Aktywna')}</td>
+    </tr>`).join('')}
+  ${!db.oferty.length?`<tr><td colspan="6" class="empty">Brak ofert — dodaj pierwszą</td></tr>`:''}
   </tbody></table>
 </div>
 
-<div class="two">
+<div class="two-col">
   <div>
-    <div class="shdr"><div class="stitle">Klienci</div><button class="btn btn-ghost" onclick="renderView('klienci')" style="font-size:11px">Wszystkie →</button></div>
+    <div class="shdr">
+      <div class="stitle">Klienci</div>
+      <button class="btn btn-ghost btn-sm" onclick="renderView('klienci')">Wszyscy →</button>
+    </div>
     <div class="tw" style="margin-bottom:0">
-    ${db.klienci.slice(0,5).map(k=>`
-      <div class="lrow" onclick="editKlient('${k.id}')">
-        ${avtrOf(k.imie_nazwisko)}
-        <div style="flex:1"><div class="lname">${k.imie_nazwisko}</div><div class="ldet">${k.budzet||k.typ_klienta}</div></div>
-        ${stag(k.status)}
-      </div>`).join('')}
+      ${db.klienci.slice(0,5).map(k=>`
+        <div class="lrow" onclick="editKlient('${k.id}')">
+          ${avatarHtml(k.imie_nazwisko)}
+          <div style="flex:1;min-width:0">
+            <div class="lname">${k.imie_nazwisko||'–'}</div>
+            <div class="ldet">${k.budzet||k.typ_klienta||''}</div>
+          </div>
+          ${stag(k.status||'Nowy')}
+        </div>`).join('')}
+      ${!db.klienci.length?`<div class="empty">Brak klientów</div>`:''}
     </div>
   </div>
   <div>
-    <div class="shdr"><div class="stitle">Pokazy</div><button class="btn btn-ghost" onclick="renderView('pokazy')" style="font-size:11px">Wszystkie →</button></div>
+    <div class="shdr">
+      <div class="stitle">Pokazy</div>
+      <button class="btn btn-ghost btn-sm" onclick="renderView('pokazy')">Wszystkie →</button>
+    </div>
     <div class="tw" style="margin-bottom:0">
-      <div class="cal-hdr"><span>📅 Zaplanowane</span><span style="color:var(--text3);font-size:11px">${db.pokazy.length} pokazów</span></div>
+      <div class="cal-hdr">
+        <span>📅 Zaplanowane</span>
+        <span style="font-size:11px;color:var(--text3);font-weight:400">${db.pokazy.length} pokazów</span>
+      </div>
       ${db.pokazy.slice(0,4).map((p,i)=>`
         <div class="cevt">
-          <div class="cdot" style="background:${['var(--gold)','var(--blue)','var(--green)','var(--red)'][i%4]}"></div>
-          <div><div class="ctitle">${p.nieruchomosc}</div>
-          <div class="cmeta">${p.data_czas||fmtDate(p.data_czas)||'–'} · ${p.agent} · ${p.klient}</div></div>
+          <div class="cdot" style="background:${['var(--red)','var(--blue)','var(--green)','var(--orange)'][i%4]}"></div>
+          <div>
+            <div class="ctitle">${p.nieruchomosc||'–'}</div>
+            <div class="cmeta">${p.data_czas||fmtDate(p.data_czas)||'–'} · ${p.agent||''} · ${p.klient||''}</div>
+          </div>
         </div>`).join('')}
+      ${!db.pokazy.length?`<div class="empty">Brak zaplanowanych pokazów</div>`:''}
     </div>
   </div>
 </div>
 
-<div class="shdr"><div class="stitle">Zadania</div><button class="btn btn-ghost" onclick="renderView('zadania')" style="font-size:11px">Wszystkie →</button></div>
+<div class="shdr">
+  <div class="stitle">Zadania</div>
+  <button class="btn btn-ghost btn-sm" onclick="renderView('zadania')">Wszystkie →</button>
+</div>
 <div class="tw">
-  ${db.zadania.slice(0,5).map(z=>`
-    <div class="trow">
-      <div class="tcheck ${z.ukonczone?'done':''}" onclick="toggleTask('${z.id}',${z.ukonczone})">${z.ukonczone?'✓':''}</div>
-      <div class="tprio" style="background:${z.priorytet==='Wysoki'?'var(--red)':z.priorytet==='Średni'?'var(--gold)':'var(--green)'}"></div>
-      <div class="ttxt ${z.ukonczone?'done':''}">${z.tresc}</div>
-      <div class="tmeta" style="margin-right:12px">${fmtDate(z.termin)}</div>
-      <div class="tmeta">${z.agent}</div>
-    </div>`).join('')}
+  ${db.zadania.slice(0,5).map(z=>taskRow(z)).join('')}
+  ${!db.zadania.length?`<div class="empty">Brak zadań</div>`:''}
 </div>`;
+}
+
+function taskRow(z) {
+  const overdue = !z.ukonczone && z.termin && z.termin < new Date().toISOString().split('T')[0];
+  return `<div class="trow">
+    <div class="tcheck ${z.ukonczone?'done':''}" onclick="toggleTask('${z.id}',${z.ukonczone})">${z.ukonczone?'✓':''}</div>
+    <div class="tprio" style="background:${z.priorytet==='Wysoki'?'var(--red)':z.priorytet==='Średni'?'var(--orange)':'var(--green)'}"></div>
+    <div class="ttxt ${z.ukonczone?'done':''}">${z.tresc||'–'}</div>
+    <div class="tmeta" style="margin-right:12px;color:${overdue?'var(--red)':'var(--text3)'}">${overdue?'⚠️ ':''}${fmtDate(z.termin)}</div>
+    <div class="tmeta">${z.agent||''}</div>
+  </div>`;
 }
 
 function vOferty() {
   const filtered = activeFilter==='all' ? db.oferty
-    : activeFilter==='reserved' ? db.oferty.filter(o=>o.status==='Zarezerwowana')
     : activeFilter==='sold' ? db.oferty.filter(o=>o.status==='Sprzedana')
+    : activeFilter==='reserved' ? db.oferty.filter(o=>o.status==='Zarezerwowana')
     : db.oferty.filter(o=>o.typ===activeFilter);
   return `
 <div class="shdr">
-  <div class="stitle">Wszystkie oferty (${db.oferty.length})</div>
+  <div class="stitle">Oferty (${db.oferty.length})</div>
   <div class="filters">
-    ${[['all','Wszystkie'],['Sprzedaż','Sprzedaż'],['Wynajem','Wynajem'],['reserved','Zarezerwowane'],['sold','Sprzedane']].map(([f,l])=>`
-      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+    ${[['all','Wszystkie'],['Sprzedaż','Sprzedaż'],['Wynajem','Wynajem'],['reserved','Zarezerwowane'],['sold','Sprzedane']].map(([f,l])=>
+      `<button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`
+    ).join('')}
   </div>
 </div>
 <div class="tw">
   <table><thead><tr>
     <th>Nieruchomość</th><th>Typ</th><th>Metraż</th><th>Cena</th><th>Agent</th><th>Status</th><th>Dodano</th>
   </tr></thead><tbody>
-  ${filtered.map(o=>`<tr onclick="editOferta('${o.id}')">
-    <td><div class="pname">${o.nazwa}</div><div class="paddr">${o.adres}</div></td>
-    <td><span class="type-tag">${o.typ}</span></td>
-    <td>${o.metraz} m²</td>
-    <td class="pname">${fmtCena(o)}</td>
-    <td>${o.agent}</td>
-    <td>${stag(o.status)}</td>
-    <td style="color:var(--text3);font-size:11px">${fmtDate(o.created_at)}</td>
-  </tr>`).join('')}
+  ${filtered.map(o=>`
+    <tr onclick="editOferta('${o.id}')">
+      <td><div class="pname">${o.nazwa||'–'}</div><div class="paddr">${o.adres||''}</div></td>
+      <td><span class="type-tag">${o.typ||'–'}</span></td>
+      <td>${o.metraz||'–'} m²</td>
+      <td style="font-weight:500">${fmtCena(o)}</td>
+      <td>${o.agent||'–'}</td>
+      <td>${stag(o.status||'Aktywna')}</td>
+      <td style="color:var(--text3);font-size:12px">${fmtDate(o.created_at)}</td>
+    </tr>`).join('')}
+  ${!filtered.length?`<tr><td colspan="7" class="empty">Brak ofert</td></tr>`:''}
   </tbody></table>
 </div>`;
 }
 
 function vKlienci() {
+  const filtered = activeFilter==='all' ? db.klienci : db.klienci.filter(k=>k.typ_klienta===activeFilter);
   return `
 <div class="shdr">
-  <div class="stitle">Baza klientów (${db.klienci.length})</div>
+  <div class="stitle">Klienci (${db.klienci.length})</div>
   <div class="filters">
-    ${[['all','Wszyscy'],['Kupujący','Kupujący'],['Sprzedający','Sprzedający'],['Najemca','Najemcy']].map(([f,l])=>`
-      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+    ${[['all','Wszyscy'],['Kupujący','Kupujący'],['Sprzedający','Sprzedający'],['Najemca','Najemcy']].map(([f,l])=>
+      `<button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`
+    ).join('')}
   </div>
 </div>
 <div class="tw">
   <table><thead><tr>
     <th>Klient</th><th>Telefon</th><th>Typ</th><th>Budżet / Cel</th><th>Agent</th><th>Źródło</th><th>Status</th>
   </tr></thead><tbody>
-  ${(activeFilter==='all'?db.klienci:db.klienci.filter(k=>k.typ_klienta===activeFilter)).map(k=>`
+  ${filtered.map(k=>`
     <tr onclick="editKlient('${k.id}')">
-      <td><div style="display:flex;gap:9px;align-items:center">${avtrOf(k.imie_nazwisko)}<div><div class="pname">${k.imie_nazwisko}</div><div class="paddr">${k.email||''}</div></div></div></td>
+      <td><div style="display:flex;gap:10px;align-items:center">${avatarHtml(k.imie_nazwisko,30)}<div>
+        <div class="pname">${k.imie_nazwisko||'–'}</div>
+        <div class="paddr">${k.email||''}</div>
+      </div></div></td>
       <td style="color:var(--text2)">${k.telefon||'–'}</td>
-      <td><span class="type-tag">${k.typ_klienta}</span></td>
-      <td style="color:var(--text2);font-size:12px">${k.budzet||'–'}</td>
+      <td><span class="type-tag">${k.typ_klienta||'–'}</span></td>
+      <td style="color:var(--text2);font-size:12.5px">${k.budzet||'–'}</td>
       <td>${k.agent||'–'}</td>
       <td style="color:var(--text3);font-size:12px">${k.zrodlo||'–'}</td>
-      <td>${stag(k.status)}</td>
+      <td>${stag(k.status||'Nowy')}</td>
     </tr>`).join('')}
+  ${!filtered.length?`<tr><td colspan="7" class="empty">Brak klientów</td></tr>`:''}
   </tbody></table>
 </div>`;
 }
 
 function vKanban() {
-  const cols = {nowy:{l:'🔵 Nowy',c:'var(--blue)'},kontakt:{l:'🟡 Kontakt',c:'var(--gold)'},negocjacje:{l:'🟠 Negocjacje',c:'var(--red)'},zamkniety:{l:'🟢 Zamknięty',c:'var(--green)'}};
+  const cols = {
+    nowy:       {l:'Nowy',      c:'var(--blue)'},
+    kontakt:    {l:'Kontakt',   c:'var(--orange)'},
+    negocjacje: {l:'Negocjacje',c:'var(--red)'},
+    zamkniety:  {l:'Zamknięty', c:'var(--green)'},
+  };
   const sm = {'Nowy':'nowy','W kontakcie':'kontakt','Spotkanie':'negocjacje','Aktywny':'negocjacje','Zamknięty':'zamkniety'};
   const g = {nowy:[],kontakt:[],negocjacje:[],zamkniety:[]};
   db.klienci.forEach(k => (g[sm[k.status]||'nowy']).push(k));
   return `
 <div class="shdr"><div class="stitle">Lejek sprzedaży</div></div>
-<div style="display:flex;gap:13px;overflow-x:auto;padding-bottom:8px">
+<div class="kanban-wrap">
   ${Object.entries(cols).map(([key,col])=>`
-    <div style="min-width:195px;background:var(--dark2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;flex-shrink:0">
-      <div style="padding:10px 13px;display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);font-size:12.5px;font-weight:500;border-left:3px solid ${col.c}">
+    <div class="kcol">
+      <div class="kcol-hdr" style="border-top:3px solid ${col.c}">
         ${col.l}
-        <span style="background:var(--dark3);border-radius:10px;padding:1px 8px;font-size:10px;color:var(--text2)">${g[key].length}</span>
+        <span class="kcol-count">${g[key].length}</span>
       </div>
-      <div style="padding:7px;min-height:100px">
+      <div style="padding:4px">
         ${g[key].map(k=>`
-          <div onclick="editKlient('${k.id}')" style="background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer">
-            <div style="font-weight:500;font-size:12.5px;margin-bottom:2px">${k.imie_nazwisko}</div>
-            <div style="font-size:11px;color:var(--text3)">${k.budzet||k.typ_klienta}</div>
-            <div style="margin-top:6px;font-size:10px;color:var(--text3)">${k.agent||''}</div>
+          <div class="kcard" onclick="editKlient('${k.id}')">
+            <div class="kcard-name">${k.imie_nazwisko||'–'}</div>
+            <div class="kcard-det">${k.budzet||k.typ_klienta||''}</div>
+            <div class="kcard-foot">
+              ${avatarHtml(k.imie_nazwisko,22)}
+              <span style="font-size:11px;color:var(--text3)">${k.agent||''}</span>
+            </div>
           </div>`).join('')}
+        ${!g[key].length?`<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px">Brak</div>`:''}
       </div>
     </div>`).join('')}
 </div>`;
@@ -752,68 +1157,75 @@ function vPokazy() {
   return `
 <div class="shdr"><div class="stitle">Pokazy (${db.pokazy.length})</div></div>
 <div class="tw">
-  <div class="cal-hdr"><span>📅 Wszystkie pokazy</span><span style="color:var(--text3);font-size:11px">${db.pokazy.length} zaplanowanych</span></div>
+  <div class="cal-hdr"><span>📅 Wszystkie pokazy</span><span style="font-size:11px;color:var(--text3);font-weight:400">${db.pokazy.length} zaplanowanych</span></div>
   ${db.pokazy.map((p,i)=>`
     <div class="cevt">
-      <div class="cdot" style="background:${['var(--gold)','var(--blue)','var(--green)','var(--red)'][i%4]}"></div>
+      <div class="cdot" style="background:${['var(--red)','var(--blue)','var(--green)','var(--orange)'][i%4]}"></div>
       <div style="flex:1">
-        <div class="ctitle">${p.nieruchomosc}</div>
-        <div class="cmeta">${p.data_czas||fmtDate(p.data_czas)||'–'} · ${p.agent} · ${p.klient}</div>
+        <div class="ctitle">${p.nieruchomosc||'–'}</div>
+        <div class="cmeta">${fmtDate(p.data_czas)||p.data_czas||'–'} · ${p.agent||''} · ${p.klient||''}</div>
       </div>
       ${stag(p.status||'Zaplanowany')}
     </div>`).join('')}
+  ${!db.pokazy.length?`<div class="empty"><div class="empty-icon">📅</div>Brak zaplanowanych pokazów</div>`:''}
 </div>`;
 }
 
 function vKalkulator() {
   return `
 <div class="shdr"><div class="stitle">Kalkulator prowizji</div></div>
-<div class="tw" style="padding:22px;margin-bottom:22px">
-  <div class="fgrid" style="margin-bottom:18px">
-    <div><label class="fl">Cena nieruchomości (zł)</label>
-      <input type="text" inputmode="decimal" id="kc-p" value="750000" oninput="kCalc()"
-        class="fi"></div>
-    <div><label class="fl">Prowizja biura (%)</label>
-      <input type="text" inputmode="decimal" id="kc-pct" value="2.5" oninput="kCalc()"
-        class="fi"></div>
-    <div><label class="fl">Udział agenta (%)</label>
-      <input type="text" inputmode="decimal" id="kc-a" value="50" oninput="kCalc()"
-        class="fi"></div>
-    <div><label class="fl">VAT</label>
-      <select id="kc-v" onchange="kCalc()" class="fs">
+<div class="tw" style="padding:24px;margin-bottom:22px">
+  <div class="fgrid" style="margin-bottom:20px">
+    <div>
+      <label class="mfl">Cena nieruchomości (zł)</label>
+      <input type="text" inputmode="decimal" id="kc-p" value="750000" oninput="kCalc()" class="mfi">
+    </div>
+    <div>
+      <label class="mfl">Prowizja biura (%)</label>
+      <input type="text" inputmode="decimal" id="kc-pct" value="2.5" oninput="kCalc()" class="mfi">
+    </div>
+    <div>
+      <label class="mfl">Udział agenta (%)</label>
+      <input type="text" inputmode="decimal" id="kc-a" value="50" oninput="kCalc()" class="mfi">
+    </div>
+    <div>
+      <label class="mfl">VAT</label>
+      <select id="kc-v" onchange="kCalc()" class="mfs">
         <option value="0">Brak VAT</option>
         <option value="23" selected>23% VAT</option>
-      </select></div>
+      </select>
+    </div>
   </div>
   <div class="calc-result">
-    <div style="font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Prowizja brutto</div>
-    <div class="calc-big" id="kc-brutto">46 013 zł</div>
-    <div class="calc-sub" id="kc-netto-lbl">Netto: 18 750 zł</div>
+    <div style="font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:600">Prowizja brutto</div>
+    <div class="calc-big" id="kc-brutto">–</div>
+    <div class="calc-sub" id="kc-netto-lbl">Netto: –</div>
   </div>
   <div class="calc-boxes">
-    <div class="calc-box"><div class="calc-box-lbl">Prowizja netto</div><div class="calc-box-val" id="kc-rn">18 750 zł</div></div>
-    <div class="calc-box"><div class="calc-box-lbl">Zarobek agenta</div><div class="calc-box-val" id="kc-ra">9 375 zł</div></div>
-    <div class="calc-box"><div class="calc-box-lbl">Zarobek biura</div><div class="calc-box-val" id="kc-ro">9 375 zł</div></div>
+    <div class="calc-box"><div class="calc-box-lbl">Prowizja netto</div><div class="calc-box-val" id="kc-rn">–</div></div>
+    <div class="calc-box"><div class="calc-box-lbl">Zarobek agenta</div><div class="calc-box-val" id="kc-ra">–</div></div>
+    <div class="calc-box"><div class="calc-box-lbl">Zarobek biura</div><div class="calc-box-val" id="kc-ro">–</div></div>
   </div>
-</div>`;
+</div>
+<script>setTimeout(kCalc,50)<\/script>`;
 }
 
 function kCalc() {
-  const p = parseFloat(document.getElementById('kc-p')?.value)||0;
-  const pct = parseFloat(document.getElementById('kc-pct')?.value)||0;
-  const a = parseFloat(document.getElementById('kc-a')?.value)||0;
-  const v = parseFloat(document.getElementById('kc-v')?.value)||0;
-  const n = p*pct/100;
-  const b = Math.round(n*(1+v/100));
-  const ag = Math.round(n*a/100);
-  const of = Math.round(n*(1-a/100));
-  const fmt = x => Math.round(x).toLocaleString('pl')+' zł';
-  const el = id => document.getElementById(id);
-  if(el('kc-brutto')) el('kc-brutto').textContent=fmt(b);
-  if(el('kc-netto-lbl')) el('kc-netto-lbl').textContent='Netto: '+fmt(n);
-  if(el('kc-rn')) el('kc-rn').textContent=fmt(n);
-  if(el('kc-ra')) el('kc-ra').textContent=fmt(ag);
-  if(el('kc-ro')) el('kc-ro').textContent=fmt(of);
+  const p=parseFloat(document.getElementById('kc-p')?.value)||0;
+  const pct=parseFloat(document.getElementById('kc-pct')?.value)||0;
+  const a=parseFloat(document.getElementById('kc-a')?.value)||0;
+  const v=parseFloat(document.getElementById('kc-v')?.value)||0;
+  const n=p*pct/100;
+  const b=Math.round(n*(1+v/100));
+  const ag=Math.round(n*a/100);
+  const of=Math.round(n*(1-a/100));
+  const fmt=x=>Math.round(x).toLocaleString('pl')+' zł';
+  const el=id=>document.getElementById(id);
+  if(el('kc-brutto'))el('kc-brutto').textContent=fmt(b);
+  if(el('kc-netto-lbl'))el('kc-netto-lbl').textContent='Netto: '+fmt(n);
+  if(el('kc-rn'))el('kc-rn').textContent=fmt(n);
+  if(el('kc-ra'))el('kc-ra').textContent=fmt(ag);
+  if(el('kc-ro'))el('kc-ro').textContent=fmt(of);
 }
 
 function vKredyty() {
@@ -823,76 +1235,82 @@ function vKredyty() {
     const wt = t.filter(x=>x.status==='W trakcie');
     const zr = t.filter(x=>x.status==='Zrealizowany');
     const sum = t.reduce((s,x)=>s+(Number(x.prowizja_biuro)||0),0);
+    const wpłacone = zr.reduce((s,x)=>s+(Number(x.prowizja_biuro)||0),0);
     return `
-<div style="margin-bottom:26px">
+<div style="margin-bottom:28px">
   <div class="shdr">
     <div class="stitle">${d}</div>
-    <span style="font-size:13px;color:var(--text2)">Prowizja łączna: <strong style="color:var(--gold)">${fmtN(sum)}</strong></span>
+    <div style="display:flex;gap:16px;font-size:13px">
+      <span style="color:var(--text3)">Łącznie: <strong style="color:var(--text)">${fmtN(sum)}</strong></span>
+      <span style="color:var(--text3)">Wypłacono: <strong style="color:var(--green)">${fmtN(wpłacone)}</strong></span>
+      <span style="color:var(--text3)">Pozostało: <strong style="color:var(--red)">${fmtN(sum-wpłacone)}</strong></span>
+    </div>
   </div>
   <div class="tw">
-    <div style="padding:9px 15px;font-size:11.5px;font-weight:500;color:var(--gold);background:rgba(196,149,74,.05);border-bottom:1px solid var(--border2)">🔄 W trakcie (${wt.length})</div>
+    <div style="padding:9px 16px;font-size:12px;font-weight:600;color:var(--orange);background:var(--orange-l);border-bottom:1px solid var(--border2)">🔄 W trakcie (${wt.length})</div>
     ${wt.map(x=>`<div class="cred-row">
-      <div style="flex:1"><div class="pname">${x.klient}</div><div class="paddr">Wysłano: ${fmtDate(x.data_wyslania)}</div></div>
-      <div style="text-align:right;margin-right:14px;min-width:90px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500;font-size:13px">${fmtN(x.kwota_kredytu)}</div></div>
-      <div style="text-align:right;margin-right:14px;min-width:80px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--gold)">${fmtN(x.prowizja_biuro)}</div></div>
+      <div style="flex:1"><div class="pname">${x.klient||'–'}</div><div class="paddr">Wysłano: ${fmtDate(x.data_wyslania)}</div></div>
+      <div style="text-align:right;margin-right:16px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500">${fmtN(x.kwota_kredytu)}</div></div>
+      <div style="text-align:right;margin-right:16px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--red)">${fmtN(x.prowizja_biuro)}</div></div>
       ${zbadge(x.zdolnosc)}
-    </div>`).join('')||'<div style="padding:14px 15px;color:var(--text3);font-size:12px">Brak</div>'}
-    <div style="padding:9px 15px;font-size:11.5px;font-weight:500;color:var(--green);background:rgba(74,156,111,.05);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)">✅ Zrealizowane (${zr.length})</div>
-    ${zr.map(x=>`<div class="cred-row" style="opacity:.85">
-      <div style="flex:1"><div class="pname">${x.klient}</div><div class="paddr">Uruchomiono: ${fmtDate(x.data_uruchomienia)}</div></div>
-      <div style="text-align:right;margin-right:14px;min-width:90px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500;font-size:13px">${fmtN(x.kwota_kredytu)}</div></div>
-      <div style="text-align:right;margin-right:14px;min-width:80px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--gold)">${fmtN(x.prowizja_biuro)}</div></div>
-      <span style="font-size:12px;color:${x.faktura_oplacona?'var(--green)':'var(--red)'}">${x.faktura_oplacona?'✓ Faktura':'✗ Faktura'}</span>
-    </div>`).join('')||'<div style="padding:14px 15px;color:var(--text3);font-size:12px">Brak</div>'}
+    </div>`).join('')||'<div class="empty">Brak tematów w trakcie</div>'}
+    <div style="padding:9px 16px;font-size:12px;font-weight:600;color:var(--green);background:var(--green-l);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)">✅ Zrealizowane (${zr.length})</div>
+    ${zr.map(x=>`<div class="cred-row">
+      <div style="flex:1"><div class="pname">${x.klient||'–'}</div><div class="paddr">Uruchomiono: ${fmtDate(x.data_uruchomienia)}</div></div>
+      <div style="text-align:right;margin-right:16px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500">${fmtN(x.kwota_kredytu)}</div></div>
+      <div style="text-align:right;margin-right:16px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--green)">${fmtN(x.prowizja_biuro)}</div></div>
+      <span style="font-size:12px;font-weight:500;color:${x.faktura_oplacona?'var(--green)':'var(--red)'}">${x.faktura_oplacona?'✓ Faktura':'✗ Faktura'}</span>
+    </div>`).join('')||'<div class="empty">Brak zrealizowanych</div>'}
   </div>
 </div>`;
   }).join('');
 }
 
 function vRaporty() {
-  const MONTHS = [['Paź',62],['Lis',58],['Gru',71],['Sty',45],['Lut',81],['Mar',91],['Kwi',87]];
-  const SALES  = [['Paź',4],['Lis',3],['Gru',5],['Sty',2],['Lut',6],['Mar',7],['Kwi',5]];
-  const maxR = Math.max(...MONTHS.map(m=>m[1]));
-  const maxS = Math.max(...SALES.map(m=>m[1]));
+  const M=[['Paź',62],['Lis',58],['Gru',71],['Sty',45],['Lut',81],['Mar',91],['Kwi',87]];
+  const S=[['Paź',4],['Lis',3],['Gru',5],['Sty',2],['Lut',6],['Mar',7],['Kwi',5]];
+  const maxR=Math.max(...M.map(m=>m[1]));
+  const maxS=Math.max(...S.map(m=>m[1]));
   return `
-<div class="two">
-  <div class="tw" style="margin-bottom:0;padding:18px">
-    <div style="font-size:14px;font-weight:500;margin-bottom:14px">Przychody miesięczne (tys. zł)</div>
-    <div class="chart-area">
-      ${MONTHS.map(([l,v])=>`<div class="cbar-grp">
-        <div class="cbar-val">${v}k</div>
-        <div class="cbar" style="height:${Math.round(v/maxR*100)}px;background:var(--gold)"></div>
-        <div class="cbar-lbl">${l}</div>
+<div class="two-col">
+  <div class="tw" style="margin-bottom:0;padding:20px">
+    <div style="font-size:14px;font-weight:500;margin-bottom:16px;color:var(--text)">Przychody miesięczne (tys. zł)</div>
+    <div class="chart-bars">
+      ${M.map(([l,v])=>`<div class="cbar-g">
+        <div class="cbar-v">${v}k</div>
+        <div class="cbar" style="height:${Math.round(v/maxR*100)}px;background:var(--red)"></div>
+        <div class="cbar-l">${l}</div>
       </div>`).join('')}
     </div>
   </div>
-  <div class="tw" style="margin-bottom:0;padding:18px">
-    <div style="font-size:14px;font-weight:500;margin-bottom:14px">Transakcje miesięczne</div>
-    <div class="chart-area">
-      ${SALES.map(([l,v])=>`<div class="cbar-grp">
-        <div class="cbar-val">${v}</div>
+  <div class="tw" style="margin-bottom:0;padding:20px">
+    <div style="font-size:14px;font-weight:500;margin-bottom:16px;color:var(--text)">Transakcje miesięczne</div>
+    <div class="chart-bars">
+      ${S.map(([l,v])=>`<div class="cbar-g">
+        <div class="cbar-v">${v}</div>
         <div class="cbar" style="height:${Math.round(v/maxS*100)}px;background:var(--green)"></div>
-        <div class="cbar-lbl">${l}</div>
+        <div class="cbar-l">${l}</div>
       </div>`).join('')}
     </div>
   </div>
 </div>
+
 <div class="shdr" style="margin-top:8px"><div class="stitle">Ranking agentów</div></div>
 <div class="tw">
   ${[
-    {pos:1,name:'Anna Kowalska',det:'8 ofert · 3 sprzedane · 37% konwersja',val:'36k zł',pct:100,c:'#FFD700'},
-    {pos:2,name:'Marek Wiśniewski',det:'6 ofert · 2 sprzedane · 33% konwersja',val:'28k zł',pct:78,c:'silver'},
-    {pos:3,name:'Piotr Stein',det:'4 oferty · 1 sprzedana · 25% konwersja',val:'23k zł',pct:64,c:'#CD7F32'},
+    {pos:1,name:'Anna Kowalska',det:'8 ofert · 3 sprzedane · 37% konwersja',val:'36k zł',pct:100,posCol:'#b8960c'},
+    {pos:2,name:'Marek Wiśniewski',det:'6 ofert · 2 sprzedane · 33% konwersja',val:'28k zł',pct:78,posCol:'#7a7a7a'},
+    {pos:3,name:'Piotr Stein',det:'4 oferty · 1 sprzedana · 25% konwersja',val:'23k zł',pct:64,posCol:'#8a5a2a'},
   ].map(a=>`
     <div class="rank-row">
-      <div class="rank-pos" style="color:${a.c}">${a.pos}</div>
-      ${avtrOf(a.name)}
+      <div class="rank-pos" style="color:${a.posCol};font-family:'Playfair Display',serif">${a.pos}</div>
+      ${avatarHtml(a.name,36)}
       <div style="flex:1">
-        <div style="font-weight:500;font-size:13px">${a.name}</div>
-        <div style="font-size:11px;color:var(--text3);margin:2px 0 5px">${a.det}</div>
-        <div class="pbg"><div class="pfill" style="width:${a.pct}%;background:var(--gold)"></div></div>
+        <div style="font-weight:500;font-size:14px">${a.name}</div>
+        <div style="font-size:12px;color:var(--text3);margin:2px 0 5px">${a.det}</div>
+        <div class="pbg"><div class="pfill" style="width:${a.pct}%;background:var(--red)"></div></div>
       </div>
-      <div style="font-weight:600;font-size:14px;color:var(--gold);min-width:50px;text-align:right">${a.val}</div>
+      <div style="font-weight:600;font-size:14px;color:var(--red);min-width:55px;text-align:right">${a.val}</div>
     </div>`).join('')}
 </div>`;
 }
@@ -905,292 +1323,344 @@ function vZadania() {
 <div class="shdr">
   <div class="stitle">Zadania (${db.zadania.length})</div>
   <div class="filters">
-    ${[['all','Wszystkie'],['open','Do zrobienia'],['done','Ukończone']].map(([f,l])=>`
-      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+    ${[['all','Wszystkie'],['open','Do zrobienia'],['done','Ukończone']].map(([f,l])=>
+      `<button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`
+    ).join('')}
   </div>
 </div>
 <div class="tw">
-  ${filtered.map(z=>`
-    <div class="trow">
-      <div class="tcheck ${z.ukonczone?'done':''}" onclick="toggleTask('${z.id}',${z.ukonczone})">${z.ukonczone?'✓':''}</div>
-      <div class="tprio" style="background:${z.priorytet==='Wysoki'?'var(--red)':z.priorytet==='Średni'?'var(--gold)':'var(--green)'}"></div>
-      <div class="ttxt ${z.ukonczone?'done':''}' style="flex:1">${z.tresc}</div>
-      <div class="tmeta" style="margin-right:12px">${fmtDate(z.termin)}</div>
-      <div class="tmeta">${z.agent||''}</div>
-    </div>`).join('')}
+  ${filtered.map(z=>taskRow(z)).join('')}
+  ${!filtered.length?`<div class="empty"><div class="empty-icon">✅</div>Brak zadań</div>`:''}
 </div>`;
 }
 
 function vNotatki() {
   return `
-<div class="shdr"><div class="stitle">Notatki (${db.notatki.length})</div></div>
+<div class="shdr"><div class="stitle">Notatki z rozmów (${db.notatki.length})</div></div>
 ${db.notatki.map(n=>`
-  <div class="tw" style="padding:15px;margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;margin-bottom:7px">
-      <div style="font-weight:500">👤 ${n.klient}</div>
+  <div class="tw" style="padding:16px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:10px">
+        ${avatarHtml(n.klient,28)}
+        <div>
+          <div style="font-weight:500;font-size:13.5px">${n.klient||'–'}</div>
+          <div style="font-size:11px;color:var(--text3)">${n.agent||''}</div>
+        </div>
+      </div>
       <div style="font-size:11px;color:var(--text3)">${fmtDate(n.created_at)}</div>
     </div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.6">${n.tresc||''}</div>
-    <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-      <span class="type-tag">${n.typ_kontaktu}</span>
-      <span style="font-size:11px;color:var(--text3)">${n.agent||''}</span>
+    <div style="font-size:13.5px;color:var(--text2);line-height:1.6;padding-left:38px">${n.tresc||'–'}</div>
+    <div style="padding-left:38px;margin-top:8px">
+      <span class="type-tag">${n.typ_kontaktu||'–'}</span>
     </div>
-  </div>`).join('')}`;
+  </div>`).join('')}
+${!db.notatki.length?`<div class="empty"><div class="empty-icon">📝</div>Brak notatek — dodaj pierwszą</div>`:''}`;
 }
 
-function vSzablony() {
-  const tmpls = [
-    {icon:'📨',title:'Potwierdzenie pokazu',text:'Dzień dobry,\n\nPotwierdzam pokaz nieruchomości [ADRES] na dzień [DATA] o godz. [GODZINA].\n\nProszę o potwierdzenie.\n\nZ poważaniem,\n[AGENT]'},
-    {icon:'💌',title:'Nowa oferta dla klienta',text:'Dzień dobry [IMIĘ],\n\nPrzedstawiam ofertę:\n📍 [ADRES]\n💰 [CENA]\n📐 [METRAZ] m²\n\nZ poważaniem,\n[AGENT]'},
-    {icon:'🤝',title:'Po podpisaniu umowy',text:'Szanowni Państwo,\n\nSerdecznie gratuluję zakupu!\n\nZ poważaniem,\n[AGENT]'},
-    {icon:'🔔',title:'Follow-up po pokazie',text:'Dzień dobry [IMIĘ],\n\nChciałem/am się upewnić czy nasza oferta Pana/Panią interesuje.\n\nZ poważaniem,\n[AGENT]'},
-    {icon:'📋',title:'Prośba o opinię',text:'Dzień dobry,\n\nDziękujemy za współpracę. Czy mógłby Pan/Pani podzielić się opinią?\n\nZ góry dziękujemy!'},
-    {icon:'🏡',title:'Bezpłatna wycena',text:'Dzień dobry,\n\nNasi eksperci przygotują bezpłatną wycenę nieruchomości.\n\nProszę o kontakt.\n\nZ poważaniem,\n[AGENT]'},
+function vProces() {
+  const fazy = [
+    { num:'I', title:'Pozyskanie nieruchomości', color:'var(--red)', steps:[
+      'Decyzja o sprzedaży — kontakt z klientem',
+      'Rozmowa telefoniczna — notatka o kliencie',
+      'Potwierdzenie spotkania SMS + mail',
+      'Spotkanie — wizja lokalna, weryfikacja dokumentów',
+      'Podpisanie umowy z klientem sprzedającym',
+    ]},
+    { num:'II', title:'Czynności administracyjne', color:'var(--orange)', steps:[
+      'Wprowadzenie klienta do CRM',
+      'Weryfikacja dokumentów nieruchomości',
+      'Zgłoszenie do MLS i agentów biura',
+      'Ocena stanu — home staging lub remont',
+      'Wysłanie maila z podsumowaniem kroków',
+    ]},
+    { num:'III', title:'Marketing i prezentacje', color:'var(--blue)', steps:[
+      'Sesja zdjęciowa + wideo + wirtualny spacer 3D',
+      'Publikacja na portalach, WWW, Facebook',
+      'Obsługa zapytań i umawianie pokazów',
+      'Feedback po pokazach → kontakt ze sprzedającym',
+      'Negocjacje warunków sprzedaży',
+    ]},
+    { num:'IV', title:'Finalizacja transakcji', color:'var(--green)', steps:[
+      'Podsumowanie ustaleń mailowo',
+      'Umowa przedwstępna / rezerwacyjna',
+      'Proces kredytowy (jeśli dotyczy)',
+      'Spotkanie w kancelarii — umowa końcowa',
+      'Przekazanie nieruchomości + protokół',
+      'Archiwizacja + relacja posprzedażowa',
+    ]},
   ];
   return `
-<div class="shdr"><div class="stitle">Szablony wiadomości</div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
-  ${tmpls.map((t,i)=>`
-    <div class="tw" style="padding:16px;cursor:pointer" onclick="copyTpl(${i})">
-      <div style="font-size:22px;margin-bottom:7px">${t.icon}</div>
-      <div style="font-weight:500;font-size:13.5px;margin-bottom:4px">${t.title}</div>
-      <div style="font-size:11.5px;color:var(--text3);line-height:1.5">${t.text.substring(0,70)}...</div>
-      <div style="margin-top:10px;font-size:11px;color:var(--gold)">📋 Kliknij aby skopiować</div>
+<div class="shdr"><div class="stitle">Proces sprzedaży — klient sprzedający</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  ${fazy.map(f=>`
+    <div class="tw" style="margin-bottom:0">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:12px;border-top:3px solid ${f.color}">
+        <div style="width:28px;height:28px;border-radius:50%;background:${f.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${f.num}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600">${f.title}</div>
+      </div>
+      <div style="padding:8px 0">
+        ${f.steps.map((s,i)=>`
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 16px;border-bottom:1px solid var(--border2)">
+            <div style="width:20px;height:20px;border-radius:50%;background:${f.color}20;color:${f.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px">${i+1}</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.5">${s}</div>
+          </div>`).join('')}
+      </div>
     </div>`).join('')}
 </div>`;
 }
 
-let TMPLS_DATA = [
-  'Dzień dobry,\n\nPotwierdzam pokaz nieruchomości [ADRES] na dzień [DATA] o godz. [GODZINA].\n\nProszę o potwierdzenie.\n\nZ poważaniem,\n[AGENT]',
-  'Dzień dobry [IMIĘ],\n\nPrzedstawiam ofertę:\n📍 [ADRES]\n💰 [CENA]\n📐 [METRAZ] m²\n\nZ poważaniem,\n[AGENT]',
-  'Szanowni Państwo,\n\nSerdecznie gratuluję zakupu!\n\nZ poważaniem,\n[AGENT]',
-  'Dzień dobry [IMIĘ],\n\nChciałem/am się upewnić czy nasza oferta Pana/Panią interesuje.\n\nZ poważaniem,\n[AGENT]',
-  'Dzień dobry,\n\nDziękujemy za współpracę. Czy mógłby Pan/Pani podzielić się opinią?\n\nZ góry dziękujemy!',
-  'Dzień dobry,\n\nNasi eksperci przygotują bezpłatną wycenę nieruchomości.\n\nProszę o kontakt.\n\nZ poważaniem,\n[AGENT]',
-];
-function copyTpl(i) {
-  navigator.clipboard.writeText(TMPLS_DATA[i])
-    .then(()=>notify('Skopiowano ✓'))
+function vSzablony() {
+  const tmpls = [
+    {icon:'📨',title:'Potwierdzenie pokazu',text:'Dzień dobry,\n\nPotwierdzam pokaz nieruchomości [ADRES] na dzień [DATA] o godz. [GODZINA].\n\nProszę o potwierdzenie przybycia.\n\nZ poważaniem,\nWojciech Brzozowski\nagentSTUmostów\nwojciechbrzozowski.pl'},
+    {icon:'💌',title:'Nowa oferta dla klienta',text:'Dzień dobry [IMIĘ],\n\nW nawiązaniu do naszej rozmowy, mam ofertę która może Pana/Panią zainteresować:\n\n📍 [ADRES]\n💰 Cena: [CENA]\n📐 Metraż: [METRAZ] m²\n🚪 Pokoje: [POKOJE]\n\nZ chęcią umówię Pana/Panią na pokaz.\n\nZ poważaniem,\nWojciech Brzozowski\nagentSTUmostów'},
+    {icon:'🤝',title:'Po podpisaniu umowy',text:'Szanowni Państwo,\n\nSerdecznie gratuluję finalizacji transakcji!\n\nDziękuję za zaufanie i przyjemność współpracy.\n\nW razie pytań pozostaję do dyspozycji.\n\nZ poważaniem,\nWojciech Brzozowski\nagentSTUmostów\nwojciechbrzozowski.pl'},
+    {icon:'🔔',title:'Follow-up po pokazie',text:'Dzień dobry [IMIĘ],\n\nChciałem/am się upewnić, czy nasza oferta nadal Pana/Panią interesuje.\n\nZ chęcią omówię szczegóły lub umówię kolejny pokaz.\n\nZ poważaniem,\nWojciech Brzozowski\nagentSTUmostów'},
+    {icon:'📋',title:'Prośba o opinię',text:'Dzień dobry [IMIĘ],\n\nDziękujemy za skorzystanie z usług agentSTUmostów.\n\nCzy mógłby/mogłaby Pan/Pani poświęcić chwilę i podzielić się opinią?\n\nZ góry serdecznie dziękuję!\n\nWojciech Brzozowski'},
+    {icon:'🏡',title:'Bezpłatna wycena',text:'Dzień dobry,\n\nDziękujemy za zainteresowanie wyceną nieruchomości.\n\nNasi eksperci przygotują bezpłatną, profesjonalną wycenę uwzględniającą aktualne ceny rynkowe.\n\nProszę o kontakt — umówimy dogodny termin.\n\nZ poważaniem,\nWojciech Brzozowski\nagentSTUmostów\nwojciechbrzozowski.pl'},
+  ];
+  window._tmpls = tmpls;
+  return `
+<div class="shdr"><div class="stitle">Szablony wiadomości</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  ${tmpls.map((t,i)=>`
+    <div class="tw" style="padding:18px;cursor:pointer;transition:all .15s" onclick="showTpl(${i})"
+      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'"
+      onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="font-size:26px;margin-bottom:10px">${t.icon}</div>
+      <div style="font-weight:500;font-size:14px;margin-bottom:4px;color:var(--text)">${t.title}</div>
+      <div style="font-size:12px;color:var(--text3)">Kliknij aby zobaczyć i skopiować</div>
+    </div>`).join('')}
+</div>
+<div id="tpl-preview" style="display:none;margin-top:16px">
+  <div class="tw" style="padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-weight:500;font-size:14px" id="tpl-title"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-red btn-sm" onclick="copyTpl()">📋 Kopiuj</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('tpl-preview').style.display='none'">✕</button>
+      </div>
+    </div>
+    <div id="tpl-text" style="background:var(--cream);padding:16px;border-radius:8px;font-size:13.5px;line-height:1.7;white-space:pre-wrap;color:var(--text2)"></div>
+  </div>
+</div>`;
+}
+
+function showTpl(i) {
+  const t = window._tmpls[i];
+  document.getElementById('tpl-title').textContent = t.icon + ' ' + t.title;
+  document.getElementById('tpl-text').textContent = t.text;
+  document.getElementById('tpl-preview').style.display = 'block';
+  document.getElementById('tpl-preview').scrollIntoView({behavior:'smooth'});
+}
+
+function copyTpl() {
+  const text = document.getElementById('tpl-text').textContent;
+  navigator.clipboard.writeText(text)
+    .then(()=>notify('Skopiowano do schowka ✓'))
     .catch(()=>notify('Zaznacz tekst i skopiuj ręcznie'));
 }
 
-// ═══════════════════════════════════════════════
-// CRUD OPERATIONS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// CRUD
+// ═══════════════════════════════════════════════════
+function setFilter(f) { activeFilter = f; renderView(currentView); }
 
-// Filtrowanie
-function setFilter(f) {
-  activeFilter = f;
-  renderView(currentView);
-}
-
-// Zadania toggle
 async function toggleTask(id, current) {
-  if (isDemo) {
-    db.zadania = db.zadania.map(z => z.id===id ? {...z, ukonczone:!current} : z);
-    updateBadges(); renderView(currentView); return;
-  }
-  const res = await sbFetch('zadania', 'PATCH', {ukonczone: !current, status: !current ? 'Ukończone' : 'Do zrobienia'}, `id=eq.${id}`);
-  await loadTable('zadania');
+  db.zadania = db.zadania.map(z=>z.id===id?{...z,ukonczone:!current}:z);
   updateBadges(); renderView(currentView);
-  notify(!current ? 'Zadanie ukończone ✓' : 'Zadanie przywrócone');
+  await sbUpdate('zadania', id, {ukonczone:!current, status:!current?'Ukończone':'Do zrobienia'});
+  notify(!current?'Zadanie ukończone ✓':'Zadanie przywrócone');
 }
 
 // Oferty
 function openAdd(type) {
-  if (type==='klient') { openAddKlient(); return; }
-  if (type==='zadanie') { openAddZadanie(); return; }
-  if (type==='notatka') { openAddNotatka(); return; }
+  if(type==='klient'){openAddKlient();return;}
+  if(type==='zadanie'){document.getElementById('m-zadanie').classList.add('open');return;}
+  if(type==='notatka'){document.getElementById('m-notatka').classList.add('open');return;}
   openAddOferta();
 }
 
 function openAddOferta() {
   ['f-id','f-nazwa','f-adres','f-cena','f-metraz','f-pokoje','f-opis'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('m-oferta-title').textContent = 'Nowa oferta';
-  document.getElementById('f-del-btn').style.display = 'none';
+  document.getElementById('m-oferta-title').textContent='Nowa oferta';
+  document.getElementById('f-del').style.display='none';
   document.getElementById('m-oferta').classList.add('open');
 }
 
 function editOferta(id) {
-  const o = db.oferty.find(x=>x.id===id); if(!o) return;
-  document.getElementById('f-id').value = id;
-  document.getElementById('f-nazwa').value = o.nazwa||'';
-  document.getElementById('f-adres').value = o.adres||'';
-  document.getElementById('f-typ').value = o.typ||'Sprzedaż';
-  document.getElementById('f-cena').value = o.cena||'';
-  document.getElementById('f-metraz').value = o.metraz||'';
-  document.getElementById('f-pokoje').value = o.pokoje||'';
-  document.getElementById('f-agent').value = o.agent||'Anna K.';
-  document.getElementById('f-status').value = o.status||'Aktywna';
-  document.getElementById('f-opis').value = o.opis||'';
-  document.getElementById('m-oferta-title').textContent = 'Edytuj ofertę';
-  document.getElementById('f-del-btn').style.display = '';
+  const o=db.oferty.find(x=>x.id===id);if(!o)return;
+  document.getElementById('f-id').value=id;
+  document.getElementById('f-nazwa').value=o.nazwa||'';
+  document.getElementById('f-adres').value=o.adres||'';
+  document.getElementById('f-typ').value=o.typ||'Sprzedaż';
+  document.getElementById('f-cena').value=o.cena||'';
+  document.getElementById('f-metraz').value=o.metraz||'';
+  document.getElementById('f-pokoje').value=o.pokoje||'';
+  document.getElementById('f-agent').value=o.agent||'Wojciech B.';
+  document.getElementById('f-status').value=o.status||'Aktywna';
+  document.getElementById('f-opis').value=o.opis||'';
+  document.getElementById('m-oferta-title').textContent='Edytuj ofertę';
+  document.getElementById('f-del').style.display='';
   document.getElementById('m-oferta').classList.add('open');
 }
 
 async function saveOferta() {
-  const id = document.getElementById('f-id').value;
-  const nazwa = document.getElementById('f-nazwa').value.trim();
-  if (!nazwa) { notify('Wpisz nazwę ⚠️'); return; }
-  const data = {
-    nazwa, adres: document.getElementById('f-adres').value,
-    typ: document.getElementById('f-typ').value,
-    cena: parseFloat(document.getElementById('f-cena').value)||null,
-    metraz: parseFloat(document.getElementById('f-metraz').value)||null,
-    pokoje: parseInt(document.getElementById('f-pokoje').value)||null,
-    agent: document.getElementById('f-agent').value,
-    status: document.getElementById('f-status').value,
-    opis: document.getElementById('f-opis').value,
+  const id=document.getElementById('f-id').value;
+  const nazwa=document.getElementById('f-nazwa').value.trim();
+  if(!nazwa){notify('Wpisz nazwę oferty ⚠️');return;}
+  const data={
+    nazwa,
+    adres:document.getElementById('f-adres').value,
+    typ:document.getElementById('f-typ').value,
+    cena:parseFloat(document.getElementById('f-cena').value)||null,
+    metraz:parseFloat(document.getElementById('f-metraz').value)||null,
+    pokoje:parseInt(document.getElementById('f-pokoje').value)||null,
+    agent:document.getElementById('f-agent').value,
+    status:document.getElementById('f-status').value,
+    opis:document.getElementById('f-opis').value,
   };
-  if (isDemo) {
-    if (id) db.oferty = db.oferty.map(o=>o.id===id?{...o,...data}:o);
-    else db.oferty.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()});
-    closeM('m-oferta'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); return;
-  }
   notify('Zapisuję...');
-  let res;
-  if (id) {
-    res = await fetch(`${SB_URL}/rest/v1/oferty?id=eq.${id}`, {method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  } else {
-    res = await fetch(`${SB_URL}/rest/v1/oferty`, {method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  }
-  if (res.ok) { closeM('m-oferta'); await loadTable('oferty'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); }
-  else notify('Błąd zapisu ❌');
+  let ok;
+  if(id) { ok=await sbUpdate('oferty',id,data); if(ok)db.oferty=db.oferty.map(o=>o.id===id?{...o,...data}:o); }
+  else { const res=await sbInsert('oferty',data); ok=!!res; if(res&&res[0])db.oferty.unshift(res[0]); }
+  closeM('m-oferta');
+  updateBadges();
+  renderView(currentView);
+  notify(ok?(id?'Oferta zaktualizowana ✓':'Oferta dodana ✓'):'Błąd zapisu ❌');
 }
 
-async function deleteOferta() {
-  const id = document.getElementById('f-id').value;
-  if (!id) return;
-  if (!confirm('Usunąć tę ofertę?')) return;
-  if (isDemo) { db.oferty = db.oferty.filter(o=>o.id!==id); closeM('m-oferta'); updateBadges(); renderView(currentView); notify('Usunięto'); return; }
-  const res = await fetch(`${SB_URL}/rest/v1/oferty?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
-  if(res.ok) { closeM('m-oferta'); await loadTable('oferty'); updateBadges(); renderView(currentView); notify('Usunięto'); }
-  else notify('Błąd ❌');
+async function delOferta() {
+  const id=document.getElementById('f-id').value;
+  if(!id||!confirm('Usunąć tę ofertę?'))return;
+  const ok=await sbDelete('oferty',id);
+  if(ok){db.oferty=db.oferty.filter(o=>o.id!==id);}
+  closeM('m-oferta');updateBadges();renderView(currentView);
+  notify(ok?'Oferta usunięta':'Błąd usuwania ❌');
 }
 
 // Klienci
 function openAddKlient() {
   ['k-id','k-imie','k-tel','k-email','k-budzet','k-notatka'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('m-klient-title').textContent = 'Nowy klient';
-  document.getElementById('k-del-btn').style.display = 'none';
+  document.getElementById('m-klient-title').textContent='Nowy klient';
+  document.getElementById('k-del').style.display='none';
   document.getElementById('m-klient').classList.add('open');
 }
 
 function editKlient(id) {
-  const k = db.klienci.find(x=>x.id===id); if(!k) return;
-  document.getElementById('k-id').value = id;
-  document.getElementById('k-imie').value = k.imie_nazwisko||'';
-  document.getElementById('k-tel').value = k.telefon||'';
-  document.getElementById('k-email').value = k.email||'';
-  document.getElementById('k-typ').value = k.typ_klienta||'Kupujący';
-  document.getElementById('k-status').value = k.status||'Nowy';
-  document.getElementById('k-zrodlo').value = k.zrodlo||'Portal';
-  document.getElementById('k-agent').value = k.agent||'Anna K.';
-  document.getElementById('k-budzet').value = k.budzet||'';
-  document.getElementById('k-notatka').value = k.notatka||'';
-  document.getElementById('m-klient-title').textContent = 'Edytuj klienta';
-  document.getElementById('k-del-btn').style.display = '';
+  const k=db.klienci.find(x=>x.id===id);if(!k)return;
+  document.getElementById('k-id').value=id;
+  document.getElementById('k-imie').value=k.imie_nazwisko||'';
+  document.getElementById('k-tel').value=k.telefon||'';
+  document.getElementById('k-email').value=k.email||'';
+  document.getElementById('k-typ').value=k.typ_klienta||'Kupujący';
+  document.getElementById('k-status').value=k.status||'Nowy';
+  document.getElementById('k-zrodlo').value=k.zrodlo||'Portal';
+  document.getElementById('k-agent').value=k.agent||'Wojciech B.';
+  document.getElementById('k-budzet').value=k.budzet||'';
+  document.getElementById('k-notatka').value=k.notatka||'';
+  document.getElementById('m-klient-title').textContent='Edytuj klienta';
+  document.getElementById('k-del').style.display='';
   document.getElementById('m-klient').classList.add('open');
 }
 
 async function saveKlient() {
-  const id = document.getElementById('k-id').value;
-  const imie = document.getElementById('k-imie').value.trim();
-  if (!imie) { notify('Wpisz imię i nazwisko ⚠️'); return; }
-  const data = {
-    imie_nazwisko: imie,
-    telefon: document.getElementById('k-tel').value,
-    email: document.getElementById('k-email').value,
-    typ_klienta: document.getElementById('k-typ').value,
-    status: document.getElementById('k-status').value,
-    zrodlo: document.getElementById('k-zrodlo').value,
-    agent: document.getElementById('k-agent').value,
-    budzet: document.getElementById('k-budzet').value,
-    notatka: document.getElementById('k-notatka').value,
+  const id=document.getElementById('k-id').value;
+  const imie=document.getElementById('k-imie').value.trim();
+  if(!imie){notify('Wpisz imię i nazwisko ⚠️');return;}
+  const data={
+    imie_nazwisko:imie,
+    telefon:document.getElementById('k-tel').value,
+    email:document.getElementById('k-email').value,
+    typ_klienta:document.getElementById('k-typ').value,
+    status:document.getElementById('k-status').value,
+    zrodlo:document.getElementById('k-zrodlo').value,
+    agent:document.getElementById('k-agent').value,
+    budzet:document.getElementById('k-budzet').value,
+    notatka:document.getElementById('k-notatka').value,
   };
-  if (isDemo) {
-    if (id) db.klienci = db.klienci.map(k=>k.id===id?{...k,...data}:k);
-    else db.klienci.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()});
-    closeM('m-klient'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); return;
-  }
   notify('Zapisuję...');
-  let res;
-  if (id) {
-    res = await fetch(`${SB_URL}/rest/v1/klienci?id=eq.${id}`,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  } else {
-    res = await fetch(`${SB_URL}/rest/v1/klienci`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  }
-  if (res.ok) { closeM('m-klient'); await loadTable('klienci'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); }
-  else notify('Błąd zapisu ❌');
+  let ok;
+  if(id){ok=await sbUpdate('klienci',id,data);if(ok)db.klienci=db.klienci.map(k=>k.id===id?{...k,...data}:k);}
+  else{const res=await sbInsert('klienci',data);ok=!!res;if(res&&res[0])db.klienci.unshift(res[0]);}
+  closeM('m-klient');updateBadges();renderView(currentView);
+  notify(ok?(id?'Klient zaktualizowany ✓':'Klient dodany ✓'):'Błąd zapisu ❌');
 }
 
-async function deleteKlient() {
-  const id = document.getElementById('k-id').value;
-  if (!id || !confirm('Usunąć tego klienta?')) return;
-  if (isDemo) { db.klienci = db.klienci.filter(k=>k.id!==id); closeM('m-klient'); updateBadges(); renderView(currentView); notify('Usunięto'); return; }
-  const res = await fetch(`${SB_URL}/rest/v1/klienci?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
-  if(res.ok) { closeM('m-klient'); await loadTable('klienci'); updateBadges(); renderView(currentView); notify('Usunięto'); }
-  else notify('Błąd ❌');
+async function delKlient() {
+  const id=document.getElementById('k-id').value;
+  if(!id||!confirm('Usunąć tego klienta?'))return;
+  const ok=await sbDelete('klienci',id);
+  if(ok)db.klienci=db.klienci.filter(k=>k.id!==id);
+  closeM('m-klient');updateBadges();renderView(currentView);
+  notify(ok?'Klient usunięty':'Błąd ❌');
 }
 
 // Zadania
-function openAddZadanie() {
-  ['z-tresc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('m-zadanie').classList.add('open');
-}
-
 async function saveZadanie() {
-  const tresc = document.getElementById('z-tresc').value.trim();
-  if (!tresc) { notify('Wpisz treść ⚠️'); return; }
-  const data = {
-    tresc, priorytet: document.getElementById('z-prio').value,
-    agent: document.getElementById('z-agent').value,
-    termin: document.getElementById('z-termin').value || null,
-    status: 'Do zrobienia', ukonczone: false,
+  const tresc=document.getElementById('z-tresc').value.trim();
+  if(!tresc){notify('Wpisz treść zadania ⚠️');return;}
+  const data={
+    tresc,
+    priorytet:document.getElementById('z-prio').value,
+    agent:document.getElementById('z-agent').value,
+    termin:document.getElementById('z-termin').value||null,
+    status:'Do zrobienia',ukonczone:false,
   };
-  if (isDemo) { db.zadania.unshift({id:Date.now().toString(),...data}); closeM('m-zadanie'); updateBadges(); renderView(currentView); notify('Dodano ✓'); return; }
-  const res = await fetch(`${SB_URL}/rest/v1/zadania`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  if(res.ok) { closeM('m-zadanie'); await loadTable('zadania'); updateBadges(); renderView(currentView); notify('Dodano ✓'); }
-  else notify('Błąd ❌');
+  const res=await sbInsert('zadania',data);
+  if(res&&res[0])db.zadania.unshift(res[0]);
+  closeM('m-zadanie');
+  document.getElementById('z-tresc').value='';
+  updateBadges();renderView(currentView);
+  notify(res?'Zadanie dodane ✓':'Błąd ❌');
 }
 
 // Notatki
-function openAddNotatka() {
-  ['n-klient','n-tresc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('m-notatka').classList.add('open');
-}
-
 async function saveNotatka() {
-  const klient = document.getElementById('n-klient').value.trim();
-  if (!klient) { notify('Wpisz klienta ⚠️'); return; }
-  const data = {
-    klient, typ_kontaktu: document.getElementById('n-typ').value,
-    tresc: document.getElementById('n-tresc').value,
-    agent: document.getElementById('n-agent').value,
+  const klient=document.getElementById('n-klient').value.trim();
+  if(!klient){notify('Wpisz klienta ⚠️');return;}
+  const data={
+    klient,
+    typ_kontaktu:document.getElementById('n-typ').value,
+    tresc:document.getElementById('n-tresc').value,
+    agent:document.getElementById('n-agent').value,
   };
-  if (isDemo) { db.notatki.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()}); closeM('m-notatka'); renderView(currentView); notify('Zapisano ✓'); return; }
-  const res = await fetch(`${SB_URL}/rest/v1/notatki`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
-  if(res.ok) { closeM('m-notatka'); await loadTable('notatki'); renderView(currentView); notify('Zapisano ✓'); }
-  else notify('Błąd ❌');
+  const res=await sbInsert('notatki',data);
+  if(res&&res[0])db.notatki.unshift(res[0]);
+  closeM('m-notatka');
+  document.getElementById('n-klient').value='';
+  document.getElementById('n-tresc').value='';
+  renderView(currentView);
+  notify(res?'Notatka zapisana ✓':'Błąd ❌');
 }
 
-// ── Utils ──
-function closeM(id) { document.getElementById(id).classList.remove('open'); }
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function closeM(id){document.getElementById(id).classList.remove('open')}
 let toastT;
-function notify(msg) {
+function notify(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2800);
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);
 }
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') document.querySelectorAll('.ovl.open').forEach(o=>o.classList.remove('open'));
+  if(e.key==='Escape')document.querySelectorAll('.ovl.open').forEach(o=>o.classList.remove('open'));
+  if(e.key==='Enter'&&document.getElementById('login').style.visibility!=='hidden'){
+    if(document.activeElement?.id==='login-pass')doLogin();
+  }
 });
 
-// ── Auto-login ──
+// ── AUTO SESSION ──
 window.addEventListener('load',()=>{
-  const url=localStorage.getItem('sb_url');
-  const key=localStorage.getItem('sb_key');
-  if(url&&key){SB_URL=url;SB_KEY=key;isDemo=false;launch(true);loadAll();}
+  const token=localStorage.getItem('sb_token');
+  const user=localStorage.getItem('sb_user');
+  const key=localStorage.getItem('sb_anon_key');
+  if(token&&user&&key){
+    SB_TOKEN=token;
+    SB_KEY=key;
+    currentUser=JSON.parse(user);
+    launchApp();
+  }
 });
 </script>
 </body>
