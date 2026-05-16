@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estate CRM — agentSTUmostów</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c4954a;--gold-l:#e8c97a;--dark:#0f0e0c;--dark2:#1a1916;
+  --dark3:#242220;--dark4:#2e2c29;--border:rgba(196,149,74,.18);
+  --border2:rgba(196,149,74,.07);--text:#e8e4dc;--text2:#a09a8e;
+  --text3:#6b6560;--green:#4a9c6f;--green-l:rgba(74,156,111,.15);
+  --red:#c0503a;--red-l:rgba(192,80,58,.15);--blue:#3a6fc0;
+  --blue-l:rgba(58,111,192,.15);--purple:#7c4ac0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── SETUP ── */
+#setup{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .4s,visibility .4s}
+#setup.gone{opacity:0;visibility:hidden}
+.setup-box{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:44px;width:460px;max-width:95vw;position:relative;overflow:hidden}
+.setup-box::after{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(196,149,74,.12) 0%,transparent 70%);pointer-events:none}
+.s-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.s-sub{font-size:12px;color:var(--text3);margin-bottom:32px}
+.s-warn{background:rgba(192,80,58,.1);border:1px solid rgba(192,80,58,.3);border-radius:8px;padding:12px;font-size:12px;color:#e07060;line-height:1.6;margin-bottom:24px}
+.s-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;font-weight:500}
+.s-input{width:100%;background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:6px;transition:border .15s}
+.s-input:focus{border-color:var(--gold)}
+.s-hint{font-size:11.5px;color:var(--text3);line-height:1.5;margin-bottom:20px}
+.s-hint a{color:var(--gold);text-decoration:none}
+.s-btn{width:100%;background:var(--gold);color:var(--dark);border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;margin-bottom:8px}
+.s-btn:hover{background:var(--gold-l)}
+.s-demo{width:100%;background:none;border:1px solid var(--border2);border-radius:8px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s}
+.s-demo:hover{border-color:var(--border);color:var(--text)}
+
+/* ── APP ── */
+.app{display:flex;min-height:100vh;opacity:0;transition:opacity .4s}
+.app.on{opacity:1}
+
+/* ── SIDEBAR ── */
+.sb{width:228px;min-width:228px;background:var(--dark2);border-right:1px solid var(--border2);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-brand{padding:22px 18px 18px;border-bottom:1px solid var(--border2)}
+.sb-logo{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold)}
+.sb-sub{font-size:10.5px;color:var(--text3);margin-top:2px}
+.sb-conn{display:flex;align-items:center;gap:6px;padding:10px 18px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border2)}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.sb-dot.ok{background:var(--green);box-shadow:0 0 0 3px rgba(74,156,111,.2)}
+.sb-sec{padding:14px 10px 4px}
+.sb-sec-lbl{font-size:9.5px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:2px}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:7px;cursor:pointer;color:var(--text2);font-size:12.5px;transition:all .15s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.ni:hover{background:rgba(196,149,74,.06);color:var(--text)}
+.ni.on{background:rgba(196,149,74,.11);color:var(--gold)}
+.ni-icon{font-size:13px;width:17px;text-align:center;flex-shrink:0}
+.ni-badge{margin-left:auto;background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px}
+.ni-badge.blue{background:var(--blue);color:#fff}
+.sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)}
+.sb-foot a{color:var(--gold);text-decoration:none;font-size:11px}
+.reset-btn{background:none;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:inherit;padding:0;margin-top:8px;display:block}
+.reset-btn:hover{color:var(--text2)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--dark2);border-bottom:1px solid var(--border2);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;letter-spacing:-.2px}
+.tb-right{display:flex;gap:8px;align-items:center}
+.btn{padding:7px 14px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;transition:all .15s}
+.btn-gold{background:var(--gold);color:var(--dark)}
+.btn-gold:hover{background:var(--gold-l)}
+.btn-ghost{background:rgba(196,149,74,.08);color:var(--gold);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(196,149,74,.15)}
+.btn-danger{background:var(--red-l);color:var(--red)}
+.content{padding:22px 26px;flex:1;overflow-y:auto}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:26px}
+.stat{background:var(--dark2);border:1px solid var(--border2);border-radius:10px;padding:17px 18px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
+.stat:hover{border-color:var(--border);transform:translateY(-1px)}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat.g::before{background:var(--gold)} .stat.gr::before{background:var(--green)}
+.stat.bl::before{background:var(--blue)} .stat.re::before{background:var(--red)}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;margin:5px 0 3px}
+.stat-ch{font-size:11px;font-weight:500}
+.stat-ch.up{color:var(--green)} .stat-ch.dn{color:var(--red)}
+
+/* ── SECTION HDR ── */
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:8px}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600}
+.filters{display:flex;gap:5px;flex-wrap:wrap}
+.fb{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:none;font-size:11px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.fb:hover{border-color:var(--border);color:var(--text2)}
+.fb.on{background:rgba(196,149,74,.1);color:var(--gold);border-color:var(--border)}
+
+/* ── TABLE ── */
+.tw{background:var(--dark2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:22px}
+table{width:100%;border-collapse:collapse}
+thead th{padding:9px 15px;font-size:10px;font-weight:500;color:var(--text3);text-align:left;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border2);background:rgba(15,14,12,.35)}
+tbody tr{border-bottom:1px solid var(--border2);transition:background .1s;cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(196,149,74,.03)}
+td{padding:10px 15px;font-size:13px;vertical-align:middle}
+.pname{font-weight:500;color:var(--text)}
+.paddr{font-size:11px;color:var(--text3);margin-top:2px}
+.type-tag{background:rgba(196,149,74,.1);color:var(--gold);padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500}
+.stag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.s-active{background:var(--green-l);color:#6fcf97}
+.s-pend{background:rgba(196,149,74,.15);color:var(--gold)}
+.s-res{background:var(--blue-l);color:#7eb3f0}
+.s-sold{background:rgba(107,101,96,.15);color:var(--text3)}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ── TWO COL ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-bottom:22px}
+
+/* ── LEADS ── */
+.lrow{display:flex;align-items:center;gap:11px;padding:10px 15px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
+.lrow:last-child{border-bottom:none}
+.lrow:hover{background:rgba(196,149,74,.03)}
+.avtr{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--dark);flex-shrink:0}
+.lname{font-size:13px;font-weight:500}
+.ldet{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ── CAL ── */
+.cal-hdr{padding:11px 15px;border-bottom:1px solid var(--border2);font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.cevt{padding:9px 15px;border-bottom:1px solid var(--border2);display:flex;gap:9px;align-items:flex-start;cursor:pointer;transition:background .1s}
+.cevt:last-child{border-bottom:none}
+.cevt:hover{background:rgba(196,149,74,.03)}
+.cdot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ctitle{font-size:12.5px;font-weight:500}
+.cmeta{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ── TASKS ── */
+.trow{display:flex;align-items:center;gap:11px;padding:9px 15px;border-bottom:1px solid var(--border2);transition:background .1s}
+.trow:last-child{border-bottom:none}
+.trow:hover{background:rgba(196,149,74,.03)}
+.tcheck{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;font-size:10px}
+.tcheck.done{background:var(--green);border-color:var(--green);color:#fff}
+.tprio{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ttxt{flex:1;font-size:13px}
+.ttxt.done{text-decoration:line-through;color:var(--text3)}
+.tmeta{font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* ── CHART BARS ── */
+.chart-area{display:flex;align-items:flex-end;gap:7px;height:120px}
+.cbar-grp{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.cbar-val{font-size:10px;font-weight:600;color:var(--text2)}
+.cbar{width:100%;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .2s;min-height:3px}
+.cbar:hover{opacity:.75}
+.cbar-lbl{font-size:10px;color:var(--text3)}
+
+/* ── PROGRESS ── */
+.pbg{background:var(--dark3);border-radius:4px;height:5px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* ── MODAL ── */
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.ovl.open{display:flex}
+.modal{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:26px;width:520px;max-width:96vw;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .2s ease}
+.modal-sm{width:420px}
+@keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mcls{position:absolute;top:13px;right:13px;background:rgba(196,149,74,.08);border:none;border-radius:6px;width:27px;height:27px;cursor:pointer;color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center}
+.mcls:hover{background:rgba(196,149,74,.16)}
+.mtitle{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:18px;padding-right:32px}
+.fg{margin-bottom:11px}
+.fl{font-size:10px;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.fi,.fs,.ft{width:100%;background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:8px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .15s;box-sizing:border-box}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--gold)}
+.fs option{background:var(--dark3)}
+.ft{resize:vertical;min-height:65px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.mact{display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--border2);margin-top:6px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--dark2);border:1px solid var(--border);color:var(--text);padding:11px 16px;border-radius:8px;font-size:13px;z-index:500;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;max-width:280px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:32px;color:var(--text3);font-size:13px}
+.spin{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── CREDIT ── */
+.cred-row{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid var(--border2)}
+.cred-row:last-child{border-bottom:none}
+.zbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+
+/* ── RANKING ── */
+.rank-row{display:flex;align-items:center;gap:13px;padding:11px 15px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
+.rank-row:last-child{border-bottom:none}
+.rank-row:hover{background:rgba(196,149,74,.03)}
+.rank-pos{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;width:26px;text-align:center}
+
+/* ── KALKULATOR ── */
+.calc-result{background:rgba(196,149,74,.07);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+.calc-big{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--gold)}
+.calc-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.calc-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.calc-box{background:var(--dark3);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center}
+.calc-box-lbl{font-size:10px;color:var(--text3);margin-bottom:3px}
+.calc-box-val{font-weight:600;font-size:14px}
+
+@media(max-width:900px){
+  .sb{display:none} .stats{grid-template-columns:repeat(2,1fr)}
+  .two,.fgrid{grid-template-columns:1fr}
+  .content{padding:14px} .topbar{padding:11px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP ══ -->
+<div id="setup">
+  <div class="setup-box">
+    <div class="s-logo">🏠 Estate CRM</div>
+    <div class="s-sub">agentSTUmostów — Powered by Supabase</div>
+    <div class="s-warn">⚠️ Nie wklejaj kluczy API do czatu ani maila. Wpisz je tylko tutaj — zapisują się wyłącznie na Twoim urządzeniu.</div>
+    <label class="s-label">Supabase URL</label>
+    <input class="s-input" id="sb-url" placeholder="https://xxx.supabase.co" type="text">
+    <label class="s-label" style="margin-top:10px">Supabase Anon Key</label>
+    <input class="s-input" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIs..." type="password">
+    <div class="s-hint">Znajdziesz je w Supabase → <a href="https://supabase.com/dashboard" target="_blank">Project Settings → API</a>. URL projektu już masz: <strong>qxjukimckpoyqncrftpw.supabase.co</strong></div>
+    <button class="s-btn" onclick="connect()">🔌 Połącz z Supabase</button>
+    <button class="s-demo" onclick="demo()">Uruchom tryb demo (bez bazy)</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-logo">🏠 Estate Premium</div>
+      <div class="sb-sub">Panel Agenta</div>
+    </div>
+    <div class="sb-conn"><div class="sb-dot" id="conn-dot"></div><span id="conn-txt">Łączenie...</span></div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">Główne</div>
+      <button class="ni on" data-v="dashboard"><span class="ni-icon">📊</span>Dashboard</button>
+      <button class="ni" data-v="oferty"><span class="ni-icon">🏘️</span>Oferty<span class="ni-badge" id="badge-of">–</span></button>
+      <button class="ni" data-v="klienci"><span class="ni-icon">👥</span>Klienci<span class="ni-badge" id="badge-kl">–</span></button>
+      <button class="ni" data-v="kanban"><span class="ni-icon">🗂️</span>Lejek sprzedaży</button>
+      <button class="ni" data-v="pokazy"><span class="ni-icon">📅</span>Pokazy</button>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">Finanse</div>
+      <button class="ni" data-v="kalkulator"><span class="ni-icon">🧮</span>Kalkulator prowizji</button>
+      <button class="ni" data-v="kredyty"><span class="ni-icon">🏦</span>Doradcy kredytowi</button>
+      <button class="ni" data-v="raporty"><span class="ni-icon">📈</span>Wykresy & Raporty</button>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-sec-lbl">Narzędzia</div>
+      <button class="ni" data-v="zadania"><span class="ni-icon">✅</span>Zadania<span class="ni-badge blue" id="badge-zd">–</span></button>
+      <button class="ni" data-v="notatki"><span class="ni-icon">📝</span>Notatki</button>
+      <button class="ni" data-v="szablony"><span class="ni-icon">✉️</span>Szablony</button>
+    </div>
+    <div class="sb-foot">
+      <div>agentSTUmostów</div>
+      <a href="https://wojciechbrzozowski.pl" target="_blank">wojciechbrzozowski.pl</a>
+      <button class="reset-btn" onclick="reset()">↩ Zmień połączenie</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-right">
+        <button class="btn btn-ghost" onclick="refresh()">↻ Odśwież</button>
+        <button class="btn btn-gold" id="add-btn" onclick="openAdd()">+ Nowa oferta</button>
+      </div>
+    </div>
+    <div class="content" id="content"><div class="loading"><span class="spin"></span>Wczytywanie...</div></div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<!-- Dodaj ofertę -->
+<div class="ovl" id="m-oferta" onclick="closeM('m-oferta')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="mcls" onclick="closeM('m-oferta')">✕</button>
+    <div class="mtitle" id="m-oferta-title">Nowa oferta</div>
+    <input type="hidden" id="f-id">
+    <div class="fgrid">
+      <div class="fg"><label class="fl">Nazwa *</label><input class="fi" id="f-nazwa" placeholder="Apartament Śródmieście"></div>
+      <div class="fg"><label class="fl">Adres</label><input class="fi" id="f-adres" placeholder="ul. Przykładowa 1, Warszawa"></div>
+      <div class="fg"><label class="fl">Typ</label><select class="fs" id="f-typ"><option>Sprzedaż</option><option>Wynajem</option></select></div>
+      <div class="fg"><label class="fl">Cena (zł)</label><input class="fi" id="f-cena" type="number" placeholder="750000"></div>
+      <div class="fg"><label class="fl">Metraż (m²)</label><input class="fi" id="f-metraz" type="number" placeholder="60"></div>
+      <div class="fg"><label class="fl">Pokoje</label><input class="fi" id="f-pokoje" type="number" placeholder="3"></div>
+      <div class="fg"><label class="fl">Agent</label><select class="fs" id="f-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
+      <div class="fg"><label class="fl">Status</label><select class="fs" id="f-status"><option>Aktywna</option><option>W negocjacji</option><option>Zarezerwowana</option><option>Sprzedana</option><option>Wycofana</option></select></div>
+    </div>
+    <div class="fg"><label class="fl">Opis</label><textarea class="ft" id="f-opis" placeholder="Opis nieruchomości..."></textarea></div>
+    <div class="mact">
+      <button class="btn btn-gold" onclick="saveOferta()">💾 Zapisz</button>
+      <button class="btn btn-ghost" onclick="closeM('m-oferta')">Anuluj</button>
+      <button class="btn btn-danger" id="f-del-btn" style="display:none" onclick="deleteOferta()">🗑️ Usuń</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dodaj klienta -->
+<div class="ovl" id="m-klient" onclick="closeM('m-klient')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="mcls" onclick="closeM('m-klient')">✕</button>
+    <div class="mtitle" id="m-klient-title">Nowy klient</div>
+    <input type="hidden" id="k-id">
+    <div class="fgrid">
+      <div class="fg"><label class="fl">Imię i nazwisko *</label><input class="fi" id="k-imie" placeholder="Jan Kowalski"></div>
+      <div class="fg"><label class="fl">Telefon</label><input class="fi" id="k-tel" placeholder="+48 600 000 000"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fi" id="k-email" type="email" placeholder="jan@email.pl"></div>
+      <div class="fg"><label class="fl">Typ klienta</label><select class="fs" id="k-typ"><option>Kupujący</option><option>Sprzedający</option><option>Najemca</option></select></div>
+      <div class="fg"><label class="fl">Status</label><select class="fs" id="k-status"><option>Nowy</option><option>W kontakcie</option><option>Spotkanie</option><option>Aktywny</option><option>Zamknięty</option></select></div>
+      <div class="fg"><label class="fl">Źródło</label><select class="fs" id="k-zrodlo"><option>Portal</option><option>Polecenie</option><option>Social Media</option><option>Bezpośredni</option></select></div>
+      <div class="fg"><label class="fl">Agent</label><select class="fs" id="k-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
+      <div class="fg"><label class="fl">Budżet / Cel</label><input class="fi" id="k-budzet" placeholder="do 800 000 zł"></div>
+    </div>
+    <div class="fg"><label class="fl">Notatka</label><textarea class="ft" id="k-notatka" placeholder="Dodatkowe informacje..."></textarea></div>
+    <div class="mact">
+      <button class="btn btn-gold" onclick="saveKlient()">💾 Zapisz</button>
+      <button class="btn btn-ghost" onclick="closeM('m-klient')">Anuluj</button>
+      <button class="btn btn-danger" id="k-del-btn" style="display:none" onclick="deleteKlient()">🗑️ Usuń</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dodaj zadanie -->
+<div class="ovl" id="m-zadanie" onclick="closeM('m-zadanie')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <button class="mcls" onclick="closeM('m-zadanie')">✕</button>
+    <div class="mtitle">Nowe zadanie</div>
+    <div class="fg"><label class="fl">Treść *</label><input class="fi" id="z-tresc" placeholder="Zadzwoń do klienta..."></div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl">Priorytet</label><select class="fs" id="z-prio"><option>Wysoki</option><option>Średni</option><option>Niski</option></select></div>
+      <div class="fg"><label class="fl">Agent</label><select class="fs" id="z-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
+      <div class="fg" style="grid-column:1/-1"><label class="fl">Termin</label><input class="fi" id="z-termin" type="date"></div>
+    </div>
+    <div class="mact">
+      <button class="btn btn-gold" onclick="saveZadanie()">💾 Zapisz</button>
+      <button class="btn btn-ghost" onclick="closeM('m-zadanie')">Anuluj</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dodaj notatkę -->
+<div class="ovl" id="m-notatka" onclick="closeM('m-notatka')">
+  <div class="modal modal-sm" onclick="event.stopPropagation()">
+    <button class="mcls" onclick="closeM('m-notatka')">✕</button>
+    <div class="mtitle">Nowa notatka</div>
+    <div class="fg"><label class="fl">Klient *</label><input class="fi" id="n-klient" placeholder="Jan Kowalski"></div>
+    <div class="fg"><label class="fl">Typ kontaktu</label><select class="fs" id="n-typ"><option>Telefon</option><option>Spotkanie</option><option>Email</option><option>SMS</option></select></div>
+    <div class="fg"><label class="fl">Treść</label><textarea class="ft" id="n-tresc" placeholder="Klient zainteresowany..."></textarea></div>
+    <div class="fg"><label class="fl">Agent</label><select class="fs" id="n-agent"><option>Anna K.</option><option>Marek W.</option><option>Piotr S.</option><option>Wojciech B.</option></select></div>
+    <div class="mact">
+      <button class="btn btn-gold" onclick="saveNotatka()">💾 Zapisz</button>
+      <button class="btn btn-ghost" onclick="closeM('m-notatka')">Anuluj</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════════════
+let SB_URL = '', SB_KEY = '', isDemo = false;
+let db = { oferty:[], klienci:[], zadania:[], pokazy:[], kredyty:[], notatki:[] };
+let activeFilter = 'all';
+let currentView = 'dashboard';
+
+const DEMO_DATA = {
+  oferty:[
+    {id:'1',nazwa:'Apartament Śródmieście',adres:'ul. Marszałkowska 12, Warszawa',typ:'Sprzedaż',cena:890000,metraz:68,pokoje:3,agent:'Anna K.',status:'Aktywna',opis:'Elegancki apartament w sercu Warszawy.',created_at:'2026-04-02'},
+    {id:'2',nazwa:'Dom jednorodzinny',adres:'ul. Leśna 7, Piaseczno',typ:'Sprzedaż',cena:1250000,metraz:145,pokoje:5,agent:'Marek W.',status:'W negocjacji',opis:'Dom z ogrodem 600m².',created_at:'2026-03-28'},
+    {id:'3',nazwa:'Kawalerka Mokotów',adres:'ul. Puławska 55, Warszawa',typ:'Wynajem',cena:2800,metraz:32,pokoje:1,agent:'Anna K.',status:'Zarezerwowana',opis:'Kawalerka po remoncie.',created_at:'2026-03-25'},
+    {id:'4',nazwa:'Penthouse Wilanów',adres:'ul. Klimczaka 1, Warszawa',typ:'Sprzedaż',cena:3400000,metraz:210,pokoje:6,agent:'Piotr S.',status:'Aktywna',opis:'Penthouse z tarasem 80m².',created_at:'2026-03-20'},
+    {id:'5',nazwa:'Mieszkanie 3-pok.',adres:'ul. Grunwaldzka 88, Kraków',typ:'Sprzedaż',cena:720000,metraz:72,pokoje:3,agent:'Marek W.',status:'Sprzedana',opis:'Słoneczne mieszkanie.',created_at:'2026-03-10'},
+  ],
+  klienci:[
+    {id:'1',imie_nazwisko:'Tomasz Kowalski',telefon:'+48 600 111 222',email:'',typ_klienta:'Kupujący',status:'Nowy',budzet:'do 800 000 zł',agent:'Anna K.',zrodlo:'Portal',notatka:'Chce 3 pokoje'},
+    {id:'2',imie_nazwisko:'Marta Nowak',telefon:'+48 601 222 333',email:'',typ_klienta:'Sprzedający',status:'W kontakcie',budzet:'dom Pruszków',agent:'Marek W.',zrodlo:'Polecenie',notatka:'Wycena w toku'},
+    {id:'3',imie_nazwisko:'Krzysztof Zając',telefon:'+48 602 333 444',email:'',typ_klienta:'Najemca',status:'Spotkanie',budzet:'biuro 80-120m²',agent:'Anna K.',zrodlo:'Portal',notatka:'Centrum'},
+    {id:'4',imie_nazwisko:'Agata Wiśniewska',telefon:'+48 603 444 555',email:'',typ_klienta:'Kupujący',status:'Nowy',budzet:'działka Mazowsze',agent:'Marek W.',zrodlo:'Social Media',notatka:'Pilne'},
+    {id:'5',imie_nazwisko:'Paweł Dąbrowski',telefon:'+48 604 555 666',email:'',typ_klienta:'Najemca',status:'W kontakcie',budzet:'kawalerka do 3500/mies',agent:'Piotr S.',zrodlo:'Portal',notatka:''},
+  ],
+  zadania:[
+    {id:'1',tresc:'Zadzwoń do Tomasza Kowalskiego – follow-up po pokazie',status:'Do zrobienia',priorytet:'Wysoki',agent:'Anna K.',termin:'2026-05-20',ukonczone:false},
+    {id:'2',tresc:'Prześlij umowę przedwstępną – Dom Piaseczno',status:'Do zrobienia',priorytet:'Wysoki',agent:'Marek W.',termin:'2026-05-21',ukonczone:false},
+    {id:'3',tresc:'Aktualizacja zdjęć Penthouse Wilanów',status:'Do zrobienia',priorytet:'Średni',agent:'Piotr S.',termin:'2026-05-19',ukonczone:false},
+    {id:'4',tresc:'Przygotuj wycenę działki Mazowsze',status:'Do zrobienia',priorytet:'Wysoki',agent:'Marek W.',termin:'2026-05-25',ukonczone:false},
+    {id:'5',tresc:'Spotkanie z deweloperem – Ursynów',status:'Ukończone',priorytet:'Średni',agent:'Anna K.',termin:'2026-05-15',ukonczone:true},
+  ],
+  pokazy:[
+    {id:'1',nieruchomosc:'Apartament Śródmieście',klient:'Tomasz Kowalski',data_czas:'Dziś 14:00',agent:'Anna K.',status:'Potwierdzony'},
+    {id:'2',nieruchomosc:'Dom Piaseczno',klient:'Marta Nowak',data_czas:'Jutro 11:00',agent:'Marek W.',status:'Zaplanowany'},
+    {id:'3',nieruchomosc:'Penthouse Wilanów',klient:'VIP klient',data_czas:'11.05 16:00',agent:'Piotr S.',status:'Potwierdzony'},
+    {id:'4',nieruchomosc:'Kawalerka Mokotów',klient:'Paweł Dąbrowski',data_czas:'12.05 10:00',agent:'Anna K.',status:'Zaplanowany'},
+  ],
+  kredyty:[
+    {id:'1',klient:'Tomasz Kowalski',doradca:'Ela Mrowiec',status:'Zrealizowany',data_wyslania:'2026-03-05',kwota_kredytu:450000,prowizja_biuro:2700,rozliczone:true,faktura_oplacona:true,zdolnosc:'Ma zdolność',zdolnosc_kwota:520000},
+    {id:'2',klient:'Marta Nowak',doradca:'Ela Mrowiec',status:'W trakcie',data_wyslania:'2026-03-10',kwota_kredytu:620000,prowizja_biuro:3720,rozliczone:false,faktura_oplacona:false,zdolnosc:'Ma zdolność',zdolnosc_kwota:680000},
+    {id:'3',klient:'Agata Wiśniewska',doradca:'Ela Mrowiec',status:'W trakcie',data_wyslania:'2026-03-18',kwota_kredytu:380000,prowizja_biuro:2280,rozliczone:false,faktura_oplacona:false,zdolnosc:'Brak zdolności',zdolnosc_kwota:0},
+    {id:'4',klient:'Krzysztof Lewandowski',doradca:'Jarek Bartosik',status:'Zrealizowany',data_wyslania:'2026-03-08',kwota_kredytu:540000,prowizja_biuro:3240,rozliczone:true,faktura_oplacona:false,zdolnosc:'Ma zdolność',zdolnosc_kwota:600000},
+    {id:'5',klient:'Beata Kowalczyk',doradca:'Jarek Bartosik',status:'W trakcie',data_wyslania:'2026-03-14',kwota_kredytu:320000,prowizja_biuro:1920,rozliczone:false,faktura_oplacona:false,zdolnosc:'Weryfikacja',zdolnosc_kwota:0},
+  ],
+  notatki:[
+    {id:'1',klient:'Tomasz Kowalski',typ_kontaktu:'Telefon',tresc:'Klient zainteresowany apartamentem na Marszałkowskiej. Budżet elastyczny do 900k.',agent:'Anna K.',created_at:'2026-04-10'},
+    {id:'2',klient:'Marta Nowak',typ_kontaktu:'Spotkanie',tresc:'Spotkanie w Pruszkowie. Klientka chce wystawić za 1,1 mln.',agent:'Marek W.',created_at:'2026-04-09'},
+    {id:'3',klient:'Paweł Dąbrowski',typ_kontaktu:'SMS',tresc:'Potwierdził zainteresowanie kawalerką. Prosi o dostęp w sobotę.',agent:'Piotr S.',created_at:'2026-04-08'},
+  ],
+};
+
+// ── Supabase REST API ──
+async function sbFetch(table, method='GET', body=null, id=null) {
+  if (isDemo) return null;
+  let url = `${SB_URL}/rest/v1/${table}`;
+  if (id) url += `?id=eq.${id}`;
+  const opts = {
+    method,
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST' ? 'return=representation' : 'return=minimal',
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url + (method==='GET' ? '?order=created_at.desc&limit=100' : ''), opts);
+  if (!r.ok) { const e = await r.text(); console.error(table, e); return null; }
+  if (method==='DELETE' || (method==='PATCH' && !opts.headers.Prefer.includes('representation'))) return true;
+  const text = await r.text();
+  return text ? JSON.parse(text) : true;
+}
+
+async function loadTable(table) {
+  const data = await sbFetch(table);
+  if (data) db[table] = data;
+}
+
+async function loadAll() {
+  await Promise.all(['oferty','klienci','zadania','pokazy','kredyty','notatki'].map(loadTable));
+  updateBadges();
+  renderView(currentView);
+}
+
+function updateBadges() {
+  document.getElementById('badge-of').textContent = db.oferty.length;
+  document.getElementById('badge-kl').textContent = db.klienci.length;
+  document.getElementById('badge-zd').textContent = db.zadania.filter(z=>!z.ukonczone).length;
+}
+
+// ── Connect ──
+async function connect() {
+  const url = document.getElementById('sb-url').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { notify('Uzupełnij URL i klucz ⚠️'); return; }
+  notify('Łączenie z Supabase...');
+  try {
+    const r = await fetch(`${url}/rest/v1/oferty?limit=1`, {
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
+    });
+    if (!r.ok) { notify('Błąd połączenia — sprawdź dane ❌'); return; }
+    SB_URL = url; SB_KEY = key;
+    localStorage.setItem('sb_url', url);
+    localStorage.setItem('sb_key', key);
+    isDemo = false;
+    launch(true);
+    await loadAll();
+  } catch(e) { notify('Błąd sieci ❌'); }
+}
+
+function demo() {
+  isDemo = true;
+  db = JSON.parse(JSON.stringify(DEMO_DATA));
+  launch(false);
+  updateBadges();
+  renderView('dashboard');
+}
+
+function launch(connected) {
+  document.getElementById('setup').classList.add('gone');
+  document.getElementById('app').classList.add('on');
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-txt');
+  if (connected) { dot.classList.add('ok'); txt.textContent = 'Supabase połączony'; }
+  else { txt.textContent = 'Tryb demo'; }
+  setupNav();
+}
+
+function reset() { localStorage.clear(); location.reload(); }
+async function refresh() {
+  if (isDemo) { notify('Tryb demo — brak bazy'); return; }
+  notify('Odświeżanie...');
+  await loadAll();
+  notify('Zaktualizowano ✓');
+}
+
+// ── Nav ──
+const VIEW_TITLES = {
+  dashboard:'Dashboard',oferty:'Oferty',klienci:'Klienci',kanban:'Lejek sprzedaży',
+  pokazy:'Pokazy',kalkulator:'Kalkulator prowizji',kredyty:'Doradcy kredytowi',
+  raporty:'Wykresy & Raporty',zadania:'Zadania',notatki:'Notatki',szablony:'Szablony',
+};
+const ADD_LABELS = {
+  oferty:'+ Nowa oferta',klienci:'+ Nowy klient',zadania:'+ Nowe zadanie',notatki:'+ Nowa notatka'
+};
+const ADD_ACTIONS = {
+  oferty:()=>openAdd('oferta'),klienci:()=>openAdd('klient'),
+  zadania:()=>openAdd('zadanie'),notatki:()=>openAdd('notatka'),
+};
+
+function setupNav() {
+  document.querySelectorAll('.ni[data-v]').forEach(b => {
+    b.addEventListener('click', () => renderView(b.dataset.v));
+  });
+}
+
+function renderView(v) {
+  currentView = v;
+  document.querySelectorAll('.ni[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v===v));
+  document.getElementById('tb-title').textContent = VIEW_TITLES[v]||v;
+  const ab = document.getElementById('add-btn');
+  if (ADD_LABELS[v]) {
+    ab.style.display=''; ab.textContent=ADD_LABELS[v];
+    ab.onclick = ADD_ACTIONS[v] || openAdd;
+  } else { ab.style.display='none'; }
+  const c = document.getElementById('content');
+  switch(v) {
+    case 'dashboard':  c.innerHTML = vDashboard(); break;
+    case 'oferty':     c.innerHTML = vOferty(); break;
+    case 'klienci':    c.innerHTML = vKlienci(); break;
+    case 'kanban':     c.innerHTML = vKanban(); break;
+    case 'pokazy':     c.innerHTML = vPokazy(); break;
+    case 'kalkulator': c.innerHTML = vKalkulator(); break;
+    case 'kredyty':    c.innerHTML = vKredyty(); break;
+    case 'raporty':    c.innerHTML = vRaporty(); break;
+    case 'zadania':    c.innerHTML = vZadania(); break;
+    case 'notatki':    c.innerHTML = vNotatki(); break;
+    case 'szablony':   c.innerHTML = vSzablony(); break;
+    default:           c.innerHTML = vDashboard();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function fmtCena(o) {
+  if (!o.cena) return '–';
+  return Number(o.cena).toLocaleString('pl') + (o.typ==='Wynajem' ? ' zł/mies.' : ' zł');
+}
+function fmtN(n) { return n ? Number(n).toLocaleString('pl')+' zł' : '–'; }
+function fmtDate(d) { if(!d) return '–'; return new Date(d).toLocaleDateString('pl'); }
+
+const AC = ['#c4954a','#3a6fc0','#4a9c6f','#9c4a4a','#6a4a9c','#c0503a','#4a9c9c'];
+function avtrOf(name) {
+  const w = (name||'').split(' ');
+  const ini = w.slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+  const col = AC[(name.charCodeAt(0)||0) % AC.length];
+  return `<div class="avtr" style="background:${col};width:32px;height:32px;font-size:11px">${ini}</div>`;
+}
+
+function stag(s) {
+  const m={'Aktywna':'s-active','W negocjacji':'s-pend','Zarezerwowana':'s-res','Sprzedana':'s-sold','Wycofana':'s-sold','Nowy':'s-active','W kontakcie':'s-pend','Spotkanie':'s-res','Aktywny':'s-active','Zamknięty':'s-sold','Ukończone':'s-sold','Do zrobienia':'s-active','Zaplanowany':'s-pend','Potwierdzony':'s-active'};
+  return `<span class="stag ${m[s]||'s-sold'}"><span class="sdot"></span>${s}</span>`;
+}
+
+function zbadge(z) {
+  const m={'Ma zdolność':['var(--green-l)','#6fcf97','✅'],'Brak zdolności':['var(--red-l)','#e07060','❌'],'Weryfikacja':['var(--blue-l)','#7eb3f0','🔍']};
+  const [bg,col,icon]=m[z]||m['Weryfikacja'];
+  return `<span class="zbadge" style="background:${bg};color:${col}">${icon} ${z||'Weryfikacja'}</span>`;
+}
+
+// ═══════════════════════════════════════════════
+// VIEWS
+// ═══════════════════════════════════════════════
+
+function vDashboard() {
+  const aktywne = db.oferty.filter(o=>o.status==='Aktywna');
+  const sprzedane = db.oferty.filter(o=>o.status==='Sprzedana');
+  const nowe = db.klienci.filter(k=>k.status==='Nowy');
+  const otwarte = db.zadania.filter(z=>!z.ukonczone);
+
+  return `
+<div class="stats">
+  <div class="stat g" onclick="renderView('oferty')">
+    <div class="stat-lbl">Aktywne oferty</div>
+    <div class="stat-val">${aktywne.length}</div>
+    <div class="stat-ch up">↑ z ${db.oferty.length} łącznie</div>
+  </div>
+  <div class="stat gr">
+    <div class="stat-lbl">Sprzedane</div>
+    <div class="stat-val">${sprzedane.length}</div>
+    <div class="stat-ch up">✓ sfinalizowane</div>
+  </div>
+  <div class="stat bl" onclick="renderView('klienci')">
+    <div class="stat-lbl">Klienci łącznie</div>
+    <div class="stat-val">${db.klienci.length}</div>
+    <div class="stat-ch up">${nowe.length} nowych</div>
+  </div>
+  <div class="stat re" onclick="renderView('zadania')">
+    <div class="stat-lbl">Otwarte zadania</div>
+    <div class="stat-val">${otwarte.length}</div>
+    <div class="stat-ch ${otwarte.length>3?'dn':'up'}">${otwarte.length>3?'⚠️ Do zrobienia':'✓ Pod kontrolą'}</div>
+  </div>
+</div>
+
+<div class="shdr">
+  <div class="stitle">Aktywne oferty</div>
+  <button class="btn btn-ghost" onclick="renderView('oferty')" style="font-size:11px">Wszystkie →</button>
+</div>
+<div class="tw" style="margin-bottom:22px">
+  <table><thead><tr>
+    <th>Nieruchomość</th><th>Typ</th><th>Metraż</th><th>Cena</th><th>Agent</th><th>Status</th>
+  </tr></thead><tbody>
+  ${db.oferty.slice(0,5).map(o=>`<tr onclick="editOferta('${o.id}')">
+    <td><div class="pname">${o.nazwa}</div><div class="paddr">${o.adres}</div></td>
+    <td><span class="type-tag">${o.typ}</span></td>
+    <td>${o.metraz} m²</td>
+    <td class="pname">${fmtCena(o)}</td>
+    <td>${o.agent}</td>
+    <td>${stag(o.status)}</td>
+  </tr>`).join('')}
+  </tbody></table>
+</div>
+
+<div class="two">
+  <div>
+    <div class="shdr"><div class="stitle">Klienci</div><button class="btn btn-ghost" onclick="renderView('klienci')" style="font-size:11px">Wszystkie →</button></div>
+    <div class="tw" style="margin-bottom:0">
+    ${db.klienci.slice(0,5).map(k=>`
+      <div class="lrow" onclick="editKlient('${k.id}')">
+        ${avtrOf(k.imie_nazwisko)}
+        <div style="flex:1"><div class="lname">${k.imie_nazwisko}</div><div class="ldet">${k.budzet||k.typ_klienta}</div></div>
+        ${stag(k.status)}
+      </div>`).join('')}
+    </div>
+  </div>
+  <div>
+    <div class="shdr"><div class="stitle">Pokazy</div><button class="btn btn-ghost" onclick="renderView('pokazy')" style="font-size:11px">Wszystkie →</button></div>
+    <div class="tw" style="margin-bottom:0">
+      <div class="cal-hdr"><span>📅 Zaplanowane</span><span style="color:var(--text3);font-size:11px">${db.pokazy.length} pokazów</span></div>
+      ${db.pokazy.slice(0,4).map((p,i)=>`
+        <div class="cevt">
+          <div class="cdot" style="background:${['var(--gold)','var(--blue)','var(--green)','var(--red)'][i%4]}"></div>
+          <div><div class="ctitle">${p.nieruchomosc}</div>
+          <div class="cmeta">${p.data_czas||fmtDate(p.data_czas)||'–'} · ${p.agent} · ${p.klient}</div></div>
+        </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<div class="shdr"><div class="stitle">Zadania</div><button class="btn btn-ghost" onclick="renderView('zadania')" style="font-size:11px">Wszystkie →</button></div>
+<div class="tw">
+  ${db.zadania.slice(0,5).map(z=>`
+    <div class="trow">
+      <div class="tcheck ${z.ukonczone?'done':''}" onclick="toggleTask('${z.id}',${z.ukonczone})">${z.ukonczone?'✓':''}</div>
+      <div class="tprio" style="background:${z.priorytet==='Wysoki'?'var(--red)':z.priorytet==='Średni'?'var(--gold)':'var(--green)'}"></div>
+      <div class="ttxt ${z.ukonczone?'done':''}">${z.tresc}</div>
+      <div class="tmeta" style="margin-right:12px">${fmtDate(z.termin)}</div>
+      <div class="tmeta">${z.agent}</div>
+    </div>`).join('')}
+</div>`;
+}
+
+function vOferty() {
+  const filtered = activeFilter==='all' ? db.oferty
+    : activeFilter==='reserved' ? db.oferty.filter(o=>o.status==='Zarezerwowana')
+    : activeFilter==='sold' ? db.oferty.filter(o=>o.status==='Sprzedana')
+    : db.oferty.filter(o=>o.typ===activeFilter);
+  return `
+<div class="shdr">
+  <div class="stitle">Wszystkie oferty (${db.oferty.length})</div>
+  <div class="filters">
+    ${[['all','Wszystkie'],['Sprzedaż','Sprzedaż'],['Wynajem','Wynajem'],['reserved','Zarezerwowane'],['sold','Sprzedane']].map(([f,l])=>`
+      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+  </div>
+</div>
+<div class="tw">
+  <table><thead><tr>
+    <th>Nieruchomość</th><th>Typ</th><th>Metraż</th><th>Cena</th><th>Agent</th><th>Status</th><th>Dodano</th>
+  </tr></thead><tbody>
+  ${filtered.map(o=>`<tr onclick="editOferta('${o.id}')">
+    <td><div class="pname">${o.nazwa}</div><div class="paddr">${o.adres}</div></td>
+    <td><span class="type-tag">${o.typ}</span></td>
+    <td>${o.metraz} m²</td>
+    <td class="pname">${fmtCena(o)}</td>
+    <td>${o.agent}</td>
+    <td>${stag(o.status)}</td>
+    <td style="color:var(--text3);font-size:11px">${fmtDate(o.created_at)}</td>
+  </tr>`).join('')}
+  </tbody></table>
+</div>`;
+}
+
+function vKlienci() {
+  return `
+<div class="shdr">
+  <div class="stitle">Baza klientów (${db.klienci.length})</div>
+  <div class="filters">
+    ${[['all','Wszyscy'],['Kupujący','Kupujący'],['Sprzedający','Sprzedający'],['Najemca','Najemcy']].map(([f,l])=>`
+      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+  </div>
+</div>
+<div class="tw">
+  <table><thead><tr>
+    <th>Klient</th><th>Telefon</th><th>Typ</th><th>Budżet / Cel</th><th>Agent</th><th>Źródło</th><th>Status</th>
+  </tr></thead><tbody>
+  ${(activeFilter==='all'?db.klienci:db.klienci.filter(k=>k.typ_klienta===activeFilter)).map(k=>`
+    <tr onclick="editKlient('${k.id}')">
+      <td><div style="display:flex;gap:9px;align-items:center">${avtrOf(k.imie_nazwisko)}<div><div class="pname">${k.imie_nazwisko}</div><div class="paddr">${k.email||''}</div></div></div></td>
+      <td style="color:var(--text2)">${k.telefon||'–'}</td>
+      <td><span class="type-tag">${k.typ_klienta}</span></td>
+      <td style="color:var(--text2);font-size:12px">${k.budzet||'–'}</td>
+      <td>${k.agent||'–'}</td>
+      <td style="color:var(--text3);font-size:12px">${k.zrodlo||'–'}</td>
+      <td>${stag(k.status)}</td>
+    </tr>`).join('')}
+  </tbody></table>
+</div>`;
+}
+
+function vKanban() {
+  const cols = {nowy:{l:'🔵 Nowy',c:'var(--blue)'},kontakt:{l:'🟡 Kontakt',c:'var(--gold)'},negocjacje:{l:'🟠 Negocjacje',c:'var(--red)'},zamkniety:{l:'🟢 Zamknięty',c:'var(--green)'}};
+  const sm = {'Nowy':'nowy','W kontakcie':'kontakt','Spotkanie':'negocjacje','Aktywny':'negocjacje','Zamknięty':'zamkniety'};
+  const g = {nowy:[],kontakt:[],negocjacje:[],zamkniety:[]};
+  db.klienci.forEach(k => (g[sm[k.status]||'nowy']).push(k));
+  return `
+<div class="shdr"><div class="stitle">Lejek sprzedaży</div></div>
+<div style="display:flex;gap:13px;overflow-x:auto;padding-bottom:8px">
+  ${Object.entries(cols).map(([key,col])=>`
+    <div style="min-width:195px;background:var(--dark2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;flex-shrink:0">
+      <div style="padding:10px 13px;display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);font-size:12.5px;font-weight:500;border-left:3px solid ${col.c}">
+        ${col.l}
+        <span style="background:var(--dark3);border-radius:10px;padding:1px 8px;font-size:10px;color:var(--text2)">${g[key].length}</span>
+      </div>
+      <div style="padding:7px;min-height:100px">
+        ${g[key].map(k=>`
+          <div onclick="editKlient('${k.id}')" style="background:var(--dark3);border:1px solid var(--border2);border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer">
+            <div style="font-weight:500;font-size:12.5px;margin-bottom:2px">${k.imie_nazwisko}</div>
+            <div style="font-size:11px;color:var(--text3)">${k.budzet||k.typ_klienta}</div>
+            <div style="margin-top:6px;font-size:10px;color:var(--text3)">${k.agent||''}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('')}
+</div>`;
+}
+
+function vPokazy() {
+  return `
+<div class="shdr"><div class="stitle">Pokazy (${db.pokazy.length})</div></div>
+<div class="tw">
+  <div class="cal-hdr"><span>📅 Wszystkie pokazy</span><span style="color:var(--text3);font-size:11px">${db.pokazy.length} zaplanowanych</span></div>
+  ${db.pokazy.map((p,i)=>`
+    <div class="cevt">
+      <div class="cdot" style="background:${['var(--gold)','var(--blue)','var(--green)','var(--red)'][i%4]}"></div>
+      <div style="flex:1">
+        <div class="ctitle">${p.nieruchomosc}</div>
+        <div class="cmeta">${p.data_czas||fmtDate(p.data_czas)||'–'} · ${p.agent} · ${p.klient}</div>
+      </div>
+      ${stag(p.status||'Zaplanowany')}
+    </div>`).join('')}
+</div>`;
+}
+
+function vKalkulator() {
+  return `
+<div class="shdr"><div class="stitle">Kalkulator prowizji</div></div>
+<div class="tw" style="padding:22px;margin-bottom:22px">
+  <div class="fgrid" style="margin-bottom:18px">
+    <div><label class="fl">Cena nieruchomości (zł)</label>
+      <input type="text" inputmode="decimal" id="kc-p" value="750000" oninput="kCalc()"
+        class="fi"></div>
+    <div><label class="fl">Prowizja biura (%)</label>
+      <input type="text" inputmode="decimal" id="kc-pct" value="2.5" oninput="kCalc()"
+        class="fi"></div>
+    <div><label class="fl">Udział agenta (%)</label>
+      <input type="text" inputmode="decimal" id="kc-a" value="50" oninput="kCalc()"
+        class="fi"></div>
+    <div><label class="fl">VAT</label>
+      <select id="kc-v" onchange="kCalc()" class="fs">
+        <option value="0">Brak VAT</option>
+        <option value="23" selected>23% VAT</option>
+      </select></div>
+  </div>
+  <div class="calc-result">
+    <div style="font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Prowizja brutto</div>
+    <div class="calc-big" id="kc-brutto">46 013 zł</div>
+    <div class="calc-sub" id="kc-netto-lbl">Netto: 18 750 zł</div>
+  </div>
+  <div class="calc-boxes">
+    <div class="calc-box"><div class="calc-box-lbl">Prowizja netto</div><div class="calc-box-val" id="kc-rn">18 750 zł</div></div>
+    <div class="calc-box"><div class="calc-box-lbl">Zarobek agenta</div><div class="calc-box-val" id="kc-ra">9 375 zł</div></div>
+    <div class="calc-box"><div class="calc-box-lbl">Zarobek biura</div><div class="calc-box-val" id="kc-ro">9 375 zł</div></div>
+  </div>
+</div>`;
+}
+
+function kCalc() {
+  const p = parseFloat(document.getElementById('kc-p')?.value)||0;
+  const pct = parseFloat(document.getElementById('kc-pct')?.value)||0;
+  const a = parseFloat(document.getElementById('kc-a')?.value)||0;
+  const v = parseFloat(document.getElementById('kc-v')?.value)||0;
+  const n = p*pct/100;
+  const b = Math.round(n*(1+v/100));
+  const ag = Math.round(n*a/100);
+  const of = Math.round(n*(1-a/100));
+  const fmt = x => Math.round(x).toLocaleString('pl')+' zł';
+  const el = id => document.getElementById(id);
+  if(el('kc-brutto')) el('kc-brutto').textContent=fmt(b);
+  if(el('kc-netto-lbl')) el('kc-netto-lbl').textContent='Netto: '+fmt(n);
+  if(el('kc-rn')) el('kc-rn').textContent=fmt(n);
+  if(el('kc-ra')) el('kc-ra').textContent=fmt(ag);
+  if(el('kc-ro')) el('kc-ro').textContent=fmt(of);
+}
+
+function vKredyty() {
+  const doradcy = ['Ela Mrowiec','Jarek Bartosik'];
+  return doradcy.map(d=>{
+    const t = db.kredyty.filter(k=>k.doradca===d);
+    const wt = t.filter(x=>x.status==='W trakcie');
+    const zr = t.filter(x=>x.status==='Zrealizowany');
+    const sum = t.reduce((s,x)=>s+(Number(x.prowizja_biuro)||0),0);
+    return `
+<div style="margin-bottom:26px">
+  <div class="shdr">
+    <div class="stitle">${d}</div>
+    <span style="font-size:13px;color:var(--text2)">Prowizja łączna: <strong style="color:var(--gold)">${fmtN(sum)}</strong></span>
+  </div>
+  <div class="tw">
+    <div style="padding:9px 15px;font-size:11.5px;font-weight:500;color:var(--gold);background:rgba(196,149,74,.05);border-bottom:1px solid var(--border2)">🔄 W trakcie (${wt.length})</div>
+    ${wt.map(x=>`<div class="cred-row">
+      <div style="flex:1"><div class="pname">${x.klient}</div><div class="paddr">Wysłano: ${fmtDate(x.data_wyslania)}</div></div>
+      <div style="text-align:right;margin-right:14px;min-width:90px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500;font-size:13px">${fmtN(x.kwota_kredytu)}</div></div>
+      <div style="text-align:right;margin-right:14px;min-width:80px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--gold)">${fmtN(x.prowizja_biuro)}</div></div>
+      ${zbadge(x.zdolnosc)}
+    </div>`).join('')||'<div style="padding:14px 15px;color:var(--text3);font-size:12px">Brak</div>'}
+    <div style="padding:9px 15px;font-size:11.5px;font-weight:500;color:var(--green);background:rgba(74,156,111,.05);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)">✅ Zrealizowane (${zr.length})</div>
+    ${zr.map(x=>`<div class="cred-row" style="opacity:.85">
+      <div style="flex:1"><div class="pname">${x.klient}</div><div class="paddr">Uruchomiono: ${fmtDate(x.data_uruchomienia)}</div></div>
+      <div style="text-align:right;margin-right:14px;min-width:90px"><div style="font-size:11px;color:var(--text3)">Kredyt</div><div style="font-weight:500;font-size:13px">${fmtN(x.kwota_kredytu)}</div></div>
+      <div style="text-align:right;margin-right:14px;min-width:80px"><div style="font-size:11px;color:var(--text3)">Prowizja</div><div style="font-weight:600;color:var(--gold)">${fmtN(x.prowizja_biuro)}</div></div>
+      <span style="font-size:12px;color:${x.faktura_oplacona?'var(--green)':'var(--red)'}">${x.faktura_oplacona?'✓ Faktura':'✗ Faktura'}</span>
+    </div>`).join('')||'<div style="padding:14px 15px;color:var(--text3);font-size:12px">Brak</div>'}
+  </div>
+</div>`;
+  }).join('');
+}
+
+function vRaporty() {
+  const MONTHS = [['Paź',62],['Lis',58],['Gru',71],['Sty',45],['Lut',81],['Mar',91],['Kwi',87]];
+  const SALES  = [['Paź',4],['Lis',3],['Gru',5],['Sty',2],['Lut',6],['Mar',7],['Kwi',5]];
+  const maxR = Math.max(...MONTHS.map(m=>m[1]));
+  const maxS = Math.max(...SALES.map(m=>m[1]));
+  return `
+<div class="two">
+  <div class="tw" style="margin-bottom:0;padding:18px">
+    <div style="font-size:14px;font-weight:500;margin-bottom:14px">Przychody miesięczne (tys. zł)</div>
+    <div class="chart-area">
+      ${MONTHS.map(([l,v])=>`<div class="cbar-grp">
+        <div class="cbar-val">${v}k</div>
+        <div class="cbar" style="height:${Math.round(v/maxR*100)}px;background:var(--gold)"></div>
+        <div class="cbar-lbl">${l}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="tw" style="margin-bottom:0;padding:18px">
+    <div style="font-size:14px;font-weight:500;margin-bottom:14px">Transakcje miesięczne</div>
+    <div class="chart-area">
+      ${SALES.map(([l,v])=>`<div class="cbar-grp">
+        <div class="cbar-val">${v}</div>
+        <div class="cbar" style="height:${Math.round(v/maxS*100)}px;background:var(--green)"></div>
+        <div class="cbar-lbl">${l}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+<div class="shdr" style="margin-top:8px"><div class="stitle">Ranking agentów</div></div>
+<div class="tw">
+  ${[
+    {pos:1,name:'Anna Kowalska',det:'8 ofert · 3 sprzedane · 37% konwersja',val:'36k zł',pct:100,c:'#FFD700'},
+    {pos:2,name:'Marek Wiśniewski',det:'6 ofert · 2 sprzedane · 33% konwersja',val:'28k zł',pct:78,c:'silver'},
+    {pos:3,name:'Piotr Stein',det:'4 oferty · 1 sprzedana · 25% konwersja',val:'23k zł',pct:64,c:'#CD7F32'},
+  ].map(a=>`
+    <div class="rank-row">
+      <div class="rank-pos" style="color:${a.c}">${a.pos}</div>
+      ${avtrOf(a.name)}
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:13px">${a.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin:2px 0 5px">${a.det}</div>
+        <div class="pbg"><div class="pfill" style="width:${a.pct}%;background:var(--gold)"></div></div>
+      </div>
+      <div style="font-weight:600;font-size:14px;color:var(--gold);min-width:50px;text-align:right">${a.val}</div>
+    </div>`).join('')}
+</div>`;
+}
+
+function vZadania() {
+  const filtered = activeFilter==='done' ? db.zadania.filter(z=>z.ukonczone)
+    : activeFilter==='open' ? db.zadania.filter(z=>!z.ukonczone)
+    : db.zadania;
+  return `
+<div class="shdr">
+  <div class="stitle">Zadania (${db.zadania.length})</div>
+  <div class="filters">
+    ${[['all','Wszystkie'],['open','Do zrobienia'],['done','Ukończone']].map(([f,l])=>`
+      <button class="fb ${activeFilter===f?'on':''}" onclick="setFilter('${f}')">${l}</button>`).join('')}
+  </div>
+</div>
+<div class="tw">
+  ${filtered.map(z=>`
+    <div class="trow">
+      <div class="tcheck ${z.ukonczone?'done':''}" onclick="toggleTask('${z.id}',${z.ukonczone})">${z.ukonczone?'✓':''}</div>
+      <div class="tprio" style="background:${z.priorytet==='Wysoki'?'var(--red)':z.priorytet==='Średni'?'var(--gold)':'var(--green)'}"></div>
+      <div class="ttxt ${z.ukonczone?'done':''}' style="flex:1">${z.tresc}</div>
+      <div class="tmeta" style="margin-right:12px">${fmtDate(z.termin)}</div>
+      <div class="tmeta">${z.agent||''}</div>
+    </div>`).join('')}
+</div>`;
+}
+
+function vNotatki() {
+  return `
+<div class="shdr"><div class="stitle">Notatki (${db.notatki.length})</div></div>
+${db.notatki.map(n=>`
+  <div class="tw" style="padding:15px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+      <div style="font-weight:500">👤 ${n.klient}</div>
+      <div style="font-size:11px;color:var(--text3)">${fmtDate(n.created_at)}</div>
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6">${n.tresc||''}</div>
+    <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+      <span class="type-tag">${n.typ_kontaktu}</span>
+      <span style="font-size:11px;color:var(--text3)">${n.agent||''}</span>
+    </div>
+  </div>`).join('')}`;
+}
+
+function vSzablony() {
+  const tmpls = [
+    {icon:'📨',title:'Potwierdzenie pokazu',text:'Dzień dobry,\n\nPotwierdzam pokaz nieruchomości [ADRES] na dzień [DATA] o godz. [GODZINA].\n\nProszę o potwierdzenie.\n\nZ poważaniem,\n[AGENT]'},
+    {icon:'💌',title:'Nowa oferta dla klienta',text:'Dzień dobry [IMIĘ],\n\nPrzedstawiam ofertę:\n📍 [ADRES]\n💰 [CENA]\n📐 [METRAZ] m²\n\nZ poważaniem,\n[AGENT]'},
+    {icon:'🤝',title:'Po podpisaniu umowy',text:'Szanowni Państwo,\n\nSerdecznie gratuluję zakupu!\n\nZ poważaniem,\n[AGENT]'},
+    {icon:'🔔',title:'Follow-up po pokazie',text:'Dzień dobry [IMIĘ],\n\nChciałem/am się upewnić czy nasza oferta Pana/Panią interesuje.\n\nZ poważaniem,\n[AGENT]'},
+    {icon:'📋',title:'Prośba o opinię',text:'Dzień dobry,\n\nDziękujemy za współpracę. Czy mógłby Pan/Pani podzielić się opinią?\n\nZ góry dziękujemy!'},
+    {icon:'🏡',title:'Bezpłatna wycena',text:'Dzień dobry,\n\nNasi eksperci przygotują bezpłatną wycenę nieruchomości.\n\nProszę o kontakt.\n\nZ poważaniem,\n[AGENT]'},
+  ];
+  return `
+<div class="shdr"><div class="stitle">Szablony wiadomości</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
+  ${tmpls.map((t,i)=>`
+    <div class="tw" style="padding:16px;cursor:pointer" onclick="copyTpl(${i})">
+      <div style="font-size:22px;margin-bottom:7px">${t.icon}</div>
+      <div style="font-weight:500;font-size:13.5px;margin-bottom:4px">${t.title}</div>
+      <div style="font-size:11.5px;color:var(--text3);line-height:1.5">${t.text.substring(0,70)}...</div>
+      <div style="margin-top:10px;font-size:11px;color:var(--gold)">📋 Kliknij aby skopiować</div>
+    </div>`).join('')}
+</div>`;
+}
+
+let TMPLS_DATA = [
+  'Dzień dobry,\n\nPotwierdzam pokaz nieruchomości [ADRES] na dzień [DATA] o godz. [GODZINA].\n\nProszę o potwierdzenie.\n\nZ poważaniem,\n[AGENT]',
+  'Dzień dobry [IMIĘ],\n\nPrzedstawiam ofertę:\n📍 [ADRES]\n💰 [CENA]\n📐 [METRAZ] m²\n\nZ poważaniem,\n[AGENT]',
+  'Szanowni Państwo,\n\nSerdecznie gratuluję zakupu!\n\nZ poważaniem,\n[AGENT]',
+  'Dzień dobry [IMIĘ],\n\nChciałem/am się upewnić czy nasza oferta Pana/Panią interesuje.\n\nZ poważaniem,\n[AGENT]',
+  'Dzień dobry,\n\nDziękujemy za współpracę. Czy mógłby Pan/Pani podzielić się opinią?\n\nZ góry dziękujemy!',
+  'Dzień dobry,\n\nNasi eksperci przygotują bezpłatną wycenę nieruchomości.\n\nProszę o kontakt.\n\nZ poważaniem,\n[AGENT]',
+];
+function copyTpl(i) {
+  navigator.clipboard.writeText(TMPLS_DATA[i])
+    .then(()=>notify('Skopiowano ✓'))
+    .catch(()=>notify('Zaznacz tekst i skopiuj ręcznie'));
+}
+
+// ═══════════════════════════════════════════════
+// CRUD OPERATIONS
+// ═══════════════════════════════════════════════
+
+// Filtrowanie
+function setFilter(f) {
+  activeFilter = f;
+  renderView(currentView);
+}
+
+// Zadania toggle
+async function toggleTask(id, current) {
+  if (isDemo) {
+    db.zadania = db.zadania.map(z => z.id===id ? {...z, ukonczone:!current} : z);
+    updateBadges(); renderView(currentView); return;
+  }
+  const res = await sbFetch('zadania', 'PATCH', {ukonczone: !current, status: !current ? 'Ukończone' : 'Do zrobienia'}, `id=eq.${id}`);
+  await loadTable('zadania');
+  updateBadges(); renderView(currentView);
+  notify(!current ? 'Zadanie ukończone ✓' : 'Zadanie przywrócone');
+}
+
+// Oferty
+function openAdd(type) {
+  if (type==='klient') { openAddKlient(); return; }
+  if (type==='zadanie') { openAddZadanie(); return; }
+  if (type==='notatka') { openAddNotatka(); return; }
+  openAddOferta();
+}
+
+function openAddOferta() {
+  ['f-id','f-nazwa','f-adres','f-cena','f-metraz','f-pokoje','f-opis'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('m-oferta-title').textContent = 'Nowa oferta';
+  document.getElementById('f-del-btn').style.display = 'none';
+  document.getElementById('m-oferta').classList.add('open');
+}
+
+function editOferta(id) {
+  const o = db.oferty.find(x=>x.id===id); if(!o) return;
+  document.getElementById('f-id').value = id;
+  document.getElementById('f-nazwa').value = o.nazwa||'';
+  document.getElementById('f-adres').value = o.adres||'';
+  document.getElementById('f-typ').value = o.typ||'Sprzedaż';
+  document.getElementById('f-cena').value = o.cena||'';
+  document.getElementById('f-metraz').value = o.metraz||'';
+  document.getElementById('f-pokoje').value = o.pokoje||'';
+  document.getElementById('f-agent').value = o.agent||'Anna K.';
+  document.getElementById('f-status').value = o.status||'Aktywna';
+  document.getElementById('f-opis').value = o.opis||'';
+  document.getElementById('m-oferta-title').textContent = 'Edytuj ofertę';
+  document.getElementById('f-del-btn').style.display = '';
+  document.getElementById('m-oferta').classList.add('open');
+}
+
+async function saveOferta() {
+  const id = document.getElementById('f-id').value;
+  const nazwa = document.getElementById('f-nazwa').value.trim();
+  if (!nazwa) { notify('Wpisz nazwę ⚠️'); return; }
+  const data = {
+    nazwa, adres: document.getElementById('f-adres').value,
+    typ: document.getElementById('f-typ').value,
+    cena: parseFloat(document.getElementById('f-cena').value)||null,
+    metraz: parseFloat(document.getElementById('f-metraz').value)||null,
+    pokoje: parseInt(document.getElementById('f-pokoje').value)||null,
+    agent: document.getElementById('f-agent').value,
+    status: document.getElementById('f-status').value,
+    opis: document.getElementById('f-opis').value,
+  };
+  if (isDemo) {
+    if (id) db.oferty = db.oferty.map(o=>o.id===id?{...o,...data}:o);
+    else db.oferty.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()});
+    closeM('m-oferta'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); return;
+  }
+  notify('Zapisuję...');
+  let res;
+  if (id) {
+    res = await fetch(`${SB_URL}/rest/v1/oferty?id=eq.${id}`, {method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  } else {
+    res = await fetch(`${SB_URL}/rest/v1/oferty`, {method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  }
+  if (res.ok) { closeM('m-oferta'); await loadTable('oferty'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); }
+  else notify('Błąd zapisu ❌');
+}
+
+async function deleteOferta() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return;
+  if (!confirm('Usunąć tę ofertę?')) return;
+  if (isDemo) { db.oferty = db.oferty.filter(o=>o.id!==id); closeM('m-oferta'); updateBadges(); renderView(currentView); notify('Usunięto'); return; }
+  const res = await fetch(`${SB_URL}/rest/v1/oferty?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
+  if(res.ok) { closeM('m-oferta'); await loadTable('oferty'); updateBadges(); renderView(currentView); notify('Usunięto'); }
+  else notify('Błąd ❌');
+}
+
+// Klienci
+function openAddKlient() {
+  ['k-id','k-imie','k-tel','k-email','k-budzet','k-notatka'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('m-klient-title').textContent = 'Nowy klient';
+  document.getElementById('k-del-btn').style.display = 'none';
+  document.getElementById('m-klient').classList.add('open');
+}
+
+function editKlient(id) {
+  const k = db.klienci.find(x=>x.id===id); if(!k) return;
+  document.getElementById('k-id').value = id;
+  document.getElementById('k-imie').value = k.imie_nazwisko||'';
+  document.getElementById('k-tel').value = k.telefon||'';
+  document.getElementById('k-email').value = k.email||'';
+  document.getElementById('k-typ').value = k.typ_klienta||'Kupujący';
+  document.getElementById('k-status').value = k.status||'Nowy';
+  document.getElementById('k-zrodlo').value = k.zrodlo||'Portal';
+  document.getElementById('k-agent').value = k.agent||'Anna K.';
+  document.getElementById('k-budzet').value = k.budzet||'';
+  document.getElementById('k-notatka').value = k.notatka||'';
+  document.getElementById('m-klient-title').textContent = 'Edytuj klienta';
+  document.getElementById('k-del-btn').style.display = '';
+  document.getElementById('m-klient').classList.add('open');
+}
+
+async function saveKlient() {
+  const id = document.getElementById('k-id').value;
+  const imie = document.getElementById('k-imie').value.trim();
+  if (!imie) { notify('Wpisz imię i nazwisko ⚠️'); return; }
+  const data = {
+    imie_nazwisko: imie,
+    telefon: document.getElementById('k-tel').value,
+    email: document.getElementById('k-email').value,
+    typ_klienta: document.getElementById('k-typ').value,
+    status: document.getElementById('k-status').value,
+    zrodlo: document.getElementById('k-zrodlo').value,
+    agent: document.getElementById('k-agent').value,
+    budzet: document.getElementById('k-budzet').value,
+    notatka: document.getElementById('k-notatka').value,
+  };
+  if (isDemo) {
+    if (id) db.klienci = db.klienci.map(k=>k.id===id?{...k,...data}:k);
+    else db.klienci.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()});
+    closeM('m-klient'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); return;
+  }
+  notify('Zapisuję...');
+  let res;
+  if (id) {
+    res = await fetch(`${SB_URL}/rest/v1/klienci?id=eq.${id}`,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  } else {
+    res = await fetch(`${SB_URL}/rest/v1/klienci`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  }
+  if (res.ok) { closeM('m-klient'); await loadTable('klienci'); updateBadges(); renderView(currentView); notify(id?'Zaktualizowano ✓':'Dodano ✓'); }
+  else notify('Błąd zapisu ❌');
+}
+
+async function deleteKlient() {
+  const id = document.getElementById('k-id').value;
+  if (!id || !confirm('Usunąć tego klienta?')) return;
+  if (isDemo) { db.klienci = db.klienci.filter(k=>k.id!==id); closeM('m-klient'); updateBadges(); renderView(currentView); notify('Usunięto'); return; }
+  const res = await fetch(`${SB_URL}/rest/v1/klienci?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
+  if(res.ok) { closeM('m-klient'); await loadTable('klienci'); updateBadges(); renderView(currentView); notify('Usunięto'); }
+  else notify('Błąd ❌');
+}
+
+// Zadania
+function openAddZadanie() {
+  ['z-tresc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('m-zadanie').classList.add('open');
+}
+
+async function saveZadanie() {
+  const tresc = document.getElementById('z-tresc').value.trim();
+  if (!tresc) { notify('Wpisz treść ⚠️'); return; }
+  const data = {
+    tresc, priorytet: document.getElementById('z-prio').value,
+    agent: document.getElementById('z-agent').value,
+    termin: document.getElementById('z-termin').value || null,
+    status: 'Do zrobienia', ukonczone: false,
+  };
+  if (isDemo) { db.zadania.unshift({id:Date.now().toString(),...data}); closeM('m-zadanie'); updateBadges(); renderView(currentView); notify('Dodano ✓'); return; }
+  const res = await fetch(`${SB_URL}/rest/v1/zadania`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  if(res.ok) { closeM('m-zadanie'); await loadTable('zadania'); updateBadges(); renderView(currentView); notify('Dodano ✓'); }
+  else notify('Błąd ❌');
+}
+
+// Notatki
+function openAddNotatka() {
+  ['n-klient','n-tresc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('m-notatka').classList.add('open');
+}
+
+async function saveNotatka() {
+  const klient = document.getElementById('n-klient').value.trim();
+  if (!klient) { notify('Wpisz klienta ⚠️'); return; }
+  const data = {
+    klient, typ_kontaktu: document.getElementById('n-typ').value,
+    tresc: document.getElementById('n-tresc').value,
+    agent: document.getElementById('n-agent').value,
+  };
+  if (isDemo) { db.notatki.unshift({id:Date.now().toString(),...data,created_at:new Date().toISOString()}); closeM('m-notatka'); renderView(currentView); notify('Zapisano ✓'); return; }
+  const res = await fetch(`${SB_URL}/rest/v1/notatki`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
+  if(res.ok) { closeM('m-notatka'); await loadTable('notatki'); renderView(currentView); notify('Zapisano ✓'); }
+  else notify('Błąd ❌');
+}
+
+// ── Utils ──
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+let toastT;
+function notify(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2800);
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.querySelectorAll('.ovl.open').forEach(o=>o.classList.remove('open'));
+});
+
+// ── Auto-login ──
+window.addEventListener('load',()=>{
+  const url=localStorage.getItem('sb_url');
+  const key=localStorage.getItem('sb_key');
+  if(url&&key){SB_URL=url;SB_KEY=key;isDemo=false;launch(true);loadAll();}
+});
+</script>
+</body>
+</html>
